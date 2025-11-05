@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ZeroBSport - Giocatori</title>
+
+    <!-- qui fai il source di stile e icoone  -->
+    <link rel="stylesheet" href="css/stile.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+    <!-- qui fai delle funzioni che ti potranno servire -->
+    <script type="text/javascript">
+        function formatDate(d) {
+            function pad(s) {
+                return (s < 10) ? "0" + s : s;
+            }
+            return [pad(d.getDate()), pad(d.getMonth() + 1), pad(d.getFullYear())].join("-");
+        }
+        function isInt(value) {
+            // esempio di codice scritto all'interno del tag script
+            try {
+                if (isNaN(value)) {
+                    return false;
+                } else {
+                    var x = parseFloat(value);
+                    // trasforma il valore numerico in float
+                    return Math.floor(value) === x;
+                    // ritorna risultato floor() di x e x
+                    // è true -> se value era un numero intero
+                    // è false -> se value era un numero con virgola
+                }
+            } catch (e) {
+                return false;
+            }
+
+        }
+    </script>
+
+</head>
+<!-- comando di avvio del programma -->
+
+<body onload="caricaGiocatori()">
+    <div class="wrapper">
+
+        <!-- qui c'è l'intestazione della pagina -->
+        <div id="top">
+            <img id="logo" src="pallone.png">
+            <h1>ZeroBSport</h1>
+            <p>Analytic Sports Data - Back Office</p>
+        </div>
+        <div class="wrapper">
+            <!-- qui c'è il menu a sx in un elenco-->
+            <div id="menubar">
+                <ul id="menulist">
+                    <li class="menuitem active"><i class="fa fa-male"></i>Giocatori</li>
+                    <li class="menuitem"><i class="fa fa-users"></i>Squadre</li>
+                    <li class="menuitem"><i class="fa fa-globe"></i>Nazioni</li>
+                    <li class="menuitem"><i class="fa fa-trophy"></i>Competizioni</li>
+                    <li class="menuitem"><i class="fa fa-user-secret"></i>Tecnici</li>
+                </ul>
+            </div>
+
+            <!-- qui c'è l'area principale della pagina -->
+            <div id="main">
+                <div id="mainHeader">
+                    <h1>Gestione Giocatori</h1>
+                    <div>
+                        <!-- campo di ricerca giocatori -->
+                        <input type="text" id="searchFieldGiocatori" />
+                        <!-- bottone cerca -->
+                        <input type="button" value="Cerca" class="btn" onclick="ricercaGiocatori()" />
+                    </div>
+                </div>
+                <!-- tabella gicatori -->
+                <table id="tableGiocatori">
+                    <!-- header della tabella -->
+                    <thead>
+                        <tr>
+                            <th data-index="ID_REC">ID_REC</th>
+                            <th data-index="NOME">Nome</th>
+                            <th data-index="COGNOME">Cognome</th>
+                            <th data-index="DATA_DI_NASCITA">Data Nascita</th>
+                            <th data-index="ALIAS">Alias</th>
+                            <th data-index="numero_maglia_abituale">N° Maglia</th>
+                            <th data-index="RUOLO_ABITUALE">Ruolo Abituale</th>
+                            <th data-index="NAZIONE_NASCITA">Nazione Nascita</th>
+                            <th data-index="CITTA_NASCITA">Città Nascita</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <!-- body della tabella con tutti i giocatori -->
+                    <!-- commentato tutto perche uso i json -->
+                    <tbody id="data">
+                        <!--
+                            <tr>
+                                <td align="right">14920</td>
+                                <td>MARK DENNIS</td>
+                                <td>GONZÁLEZ HOFFM</td>
+                                <td>10-07-1984</td>
+                                <td>GONZÁLEZ</td>
+                                <td align="right">&nbsp;</td>
+                                <td>Centrocampista</td>
+                                <td>Sud Africa</td>
+                                <td>Sconosciuta</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">13697</td>
+                                <td>ALAN</td>
+                                <td>HUTTON</td>
+                                <td>30-11-1984</td>
+                                <td>HUTTON</td>
+                                <td align="right">28</td>
+                                <td>Difensore</td>
+                                <td>Scozia</td>
+                                <td>Sconosciuta</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">14942</td>
+                                <td>EMYR</td>
+                                <td>HUMS</td>
+                                <td>30-09-1993</td>
+                                <td>HUMS</td>
+                                <td align="right">&nbsp;</td>
+                                <td>Centrocampista</td>
+                                <td>Galles</td>
+                                <td>Sconosciuta</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">13695</td>
+                                <td>SEOK HO</td>
+                                <td>HMANG</td>
+                                <td>27-06-1989</td>
+                                <td>HMANG</td>
+                                <td align="right">&nbsp;</td>
+                                <td>Difensore</td>
+                                <td>Corea del Sud</td>
+                                <td>Sconosciuta</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">12279</td>
+                                <td>MIRKO</td>
+                                <td>IVANOVSKI</td>
+                                <td>31-10-1989</td>
+                                <td>IVANOVSKI</td>
+                                <td align="right">22</td>
+                                <td>Attaccante</td>
+                                <td>Macedonia</td>
+                                <td>Sconosciuta</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">67890</td>
+                                <td>CRISTIANO</td>
+                                <td>RONALDO</td>
+                                <td>05-02-1985</td>
+                                <td>CR7</td>
+                                <td align="right">7</td>
+                                <td>Attaccante</td>
+                                <td>Portogallo</td>
+                                <td>Funchal</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">54321</td>
+                                <td>LIONEL</td>
+                                <td>MESSI</td>
+                                <td>24-06-1987</td>
+                                <td>Leo</td>
+                                <td align="right">10</td>
+                                <td>Attaccante</td>
+                                <td>Argentina</td>
+                                <td>Rosario</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">98765</td>
+                                <td>GIANLUIGI</td>
+                                <td>BUFFON</td>
+                                <td>28-01-1978</td>
+                                <td>Gigi</td>
+                                <td align="right">1</td>
+                                <td>Portiere</td>
+                                <td>Italia</td>
+                                <td>Carrara</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">13579</td>
+                                <td>ZLATAN</td>
+                                <td>IBRAHIMOVIĆ</td>
+                                <td>03-10-1981</td>
+                                <td>Ibra</td>
+                                <td align="right">11</td>
+                                <td>Attaccante</td>
+                                <td>Svezia</td>
+                                <td>Malmö</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">24680</td>
+                                <td>ROBERT</td>
+                                <td>LEWANDOWSKI</td>
+                                <td>21-08-1988</td>
+                                <td>Lewy</td>
+                                <td align="right">9</td>
+                                <td>Attaccante</td>
+                                <td>Polonia</td>
+                                <td>Varsavia</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">35461</td>
+                                <td>SERGIO</td>
+                                <td>RAMOS</td>
+                                <td>30-03-1986</td>
+                                <td>N/A</td>
+                                <td align="right">4</td>
+                                <td>Difensore</td>
+                                <td>Spagna</td>
+                                <td>Camas</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">46282</td>
+                                <td>LUKA</td>
+                                <td>MODRIĆ</td>
+                                <td>09-09-1985</td>
+                                <td>N/A</td>
+                                <td align="right">10</td>
+                                <td>Centrocampista</td>
+                                <td>Croazia</td>
+                                <td>Zadar</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">57193</td>
+                                <td>VIRGIL</td>
+                                <td>VAN DIJK</td>
+                                <td>08-07-1991</td>
+                                <td>N/A</td>
+                                <td align="right">4</td>
+                                <td>Difensore</td>
+                                <td>Olanda</td>
+                                <td>Breda</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">68904</td>
+                                <td>MOHAMED</td>
+                                <td>SALAH</td>
+                                <td>15-06-1992</td>
+                                <td>N/A</td>
+                                <td align="right">11</td>
+                                <td>Attaccante</td>
+                                <td>Egitto</td>
+                                <td>Nagrig</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">79815</td>
+                                <td>KYLIAN</td>
+                                <td>MBAPPÉ</td>
+                                <td>20-12-1998</td>
+                                <td>N/A</td>
+                                <td align="right">7</td>
+                                <td>Attaccante</td>
+                                <td>Francia</td>
+                                <td>Bondy</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">482931</td>
+                                <td>FRANCESCO</td>
+                                <td>TOTTI</td>
+                                <td>27-09-1976</td>
+                                <td>Er Pupone</td>
+                                <td align="right">10</td>
+                                <td>Attaccante</td>
+                                <td>Italia</td>
+                                <td>Roma</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">392018</td>
+                                <td>PAOLO</td>
+                                <td>MALDINI</td>
+                                <td>26-06-1968</td>
+                                <td>N/A</td>
+                                <td align="right">3</td>
+                                <td>Difensore</td>
+                                <td>Italia</td>
+                                <td>Milano</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">593402</td>
+                                <td>ANDREA</td>
+                                <td>PIRLO</td>
+                                <td>19-05-1979</td>
+                                <td>N/A</td>
+                                <td align="right">21</td>
+                                <td>Centrocampista</td>
+                                <td>Italia</td>
+                                <td>Flero</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">817629</td>
+                                <td>FRANCO</td>
+                                <td>BARESI</td>
+                                <td>08-05-1960</td>
+                                <td>N/A</td>
+                                <td align="right">6</td>
+                                <td>Difensore</td>
+                                <td>Italia</td>
+                                <td>Travagliato</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">129846</td>
+                                <td>PAVEL</td>
+                                <td>NEDVĚD</td>
+                                <td>30-08-1972</td>
+                                <td>N/A</td>
+                                <td align="right">11</td>
+                                <td>Centrocampista</td>
+                                <td>Repubblica Ceca</td>
+                                <td>České Budějovice</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">234165</td>
+                                <td>GIANFRANCO</td>
+                                <td>ZOLA</td>
+                                <td>05-07-1966</td>
+                                <td>Magic Box</td>
+                                <td align="right">25</td>
+                                <td>Attaccante</td>
+                                <td>Italia</td>
+                                <td>Oliena</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">384920</td>
+                                <td>THIERRY</td>
+                                <td>HENRY</td>
+                                <td>17-08-1977</td>
+                                <td>Titi</td>
+                                <td align="right">14</td>
+                                <td>Attaccante</td>
+                                <td>Francia</td>
+                                <td>Les Ulis</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">529312</td>
+                                <td>FRANCK</td>
+                                <td>RIJKAARD</td>
+                                <td>30-09-1962</td>
+                                <td>N/A</td>
+                                <td align="right">4</td>
+                                <td>Centrocampista</td>
+                                <td>Olanda</td>
+                                <td>Amsterdam</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">673912</td>
+                                <td>FABIO</td>
+                                <td>CANNVARO</td>
+                                <td>13-09-1973</td>
+                                <td>N/A</td>
+                                <td align="right">5</td>
+                                <td>Difensore</td>
+                                <td>Italia</td>
+                                <td>Napoli</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                            <tr>
+                                <td align="right">812345</td>
+                                <td>ALFREDO</td>
+                                <td>DISTEFANO</td>
+                                <td>04-07-1926</td>
+                                <td>N/A</td>
+                                <td align="right">9</td>
+                                <td>Attaccante</td>
+                                <td>Argentina</td>
+                                <td>Buenos Aires</td>
+                                <td><i class="fa fa-trash" style="font-size: 16px;"></i></td>
+                            </tr>
+                        -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- sidebar per modificare i giocatori -->
+            <div id="sidebar">
+                <h3>Form Giocatore</h3>
+                <form action="" method="POST" id="formGiocatori">
+                    <label for="ID_REC">ID</label>
+                    <input type="text" name="ID_REC" readonly />
+                    <label for="NOME">Nome</label>
+                    <input type="text" name="NOME" />
+                    <label for="COGNOME">Cognome</label>
+                    <input type="text" name="COGNOME" />
+                    <label for="DATA_NASCITA">Data Nascita:</label>
+                    <input type="date" name="DATA_DI_NASCITA" />
+                    <label for="ALIAS">Alias:</label>
+                    <input type="text" name="ALIAS" />
+                    <label FOR="NUMERO_MAGLIA">N° Maglia:</label>
+                    <input type="number" name="numero_maglia_abituale" step="1">
+                    <label for="RUOLO_ABITUALE">Ruolo Abituale:</label>
+                    <select name="RUOLO_ABITUALE">
+                        <option value="1">Portiere</option>
+                        <option value="2">Difensore</option>
+                        <option value="3">Centrocampista</option>
+                        <option value="4">Attaccante</option>
+                    </select>
+                    <label for="NAZIONE_NASCITA">Nazione Nascita:</label>
+                    <input type="text" name="NAZIONE_NASCITA" />
+                    <label for="CITTA_NASCITA">Città Nascita:</label>
+                    <input type="text" name="CITTA_NASCITA" />
+
+                    <input type="submit" value="Salva" class="btn" />
+                    <input type="reset" value="Cancella" class="btn" />
+                </form>
+            </div>
+        </div>
+        <div id="bottom">ZeroBSport - Copyright © 2018 ZeroB s.r.l. - All Rights Reserved</div>
+    </div>
+    <script type="text/javascript" src="js/giocatori.js"></script>
+</body>
+
+</html>

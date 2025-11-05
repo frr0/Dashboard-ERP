@@ -1,0 +1,44 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+footer {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    text-align: center;
+    margin-top: auto;
+    width: 100%;
+}
+
+/* Padding per il contenuto */
+#area-principale {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Tabella a tutta larghezza */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.table-container .table {
+    width: 100%;
+    margin-bottom: 0;
+}

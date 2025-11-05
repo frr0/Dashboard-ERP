@@ -1,0 +1,192 @@
+/* body e input sono tag in html */
+/* # definisce uno stile per un tag a cui è stato assegnato un attribito  eg. #parola  <div id="parola">*/
+body {
+    font: 100% Lucida Sans, Verdana;
+    margin: 5px;
+    line-height: 26px;
+    color: #212121;
+}
+
+.wrapper {
+    position: relative;
+    overflow: auto;
+    min-height: 51rem;
+}
+
+#top,
+#sidebar,
+#bottom,
+.menuitem {
+    border-radius: 4px;
+    margin: 4px;
+}
+
+#top {
+    background-color: #424242;
+    color: #ffffff;
+    padding: 15px;
+}
+
+#logo {
+    float: left;
+    width: 50px;
+    margin-right: 10px;
+}
+
+#menubar {
+    width: 200px;
+    float: left;
+}
+
+#main {
+    padding: 5px 10px 10px 10px;
+    margin: 0 272px 0 195px;
+}
+
+#main table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+#main th {
+    background-color: #757575;
+    color: white;
+    font-weight: bold;
+}
+
+#main td,
+#main th {
+    padding: 6px;
+    border: 1px solid #9b9b9b;
+    text-align: left;
+    word-break: break-word;
+}
+
+#main tr:nth-child(odd) {
+    background-color: #eeeeee;
+}
+
+#sidebar {
+    background-color: #f1f1f1;
+    border: 1px solid #909090;
+    ;
+    padding: 10px;
+    width: 250px;
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
+input[type=text],
+input[type=date],
+input[type=number],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+    margin-bottom: 10px;
+    height: 32px;
+}
+
+input.btn {
+    background-color: #404040;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    margin: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    min-width: 100px;
+    float: right;
+}
+
+#bottom {
+    border: 1px solid #d4d4d4;
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 10px;
+    font-size: 70%;
+    line-height: 14px;
+}
+
+#top h1,
+#top p,
+#menulist {
+    margin: 0;
+    padding: 0;
+}
+
+.menuitem {
+    background-color: #f1f1f1;
+    border: 1px solid #909090;
+    list-style-type: none;
+    padding: 6px;
+    cursor: pointer;
+}
+
+.menuitem:hover {
+    background-color: white;
+}
+
+.menuitem:active {
+    background-color: #616161;
+    color: white;
+    font-weight: bold;
+}
+
+.menuitem i.fa {
+    margin-right: 10px;
+}
+
+input.invalid,
+select.invalid {
+    border-radius: 4px;
+    border: 1px solid #dc3545;
+    margin-bottom: 0;
+}
+
+input.invalid:focus,
+select.invalid:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.2em rgba(220, 53, 69, .25);
+    margin-bottom: 0;
+}
+
+.invalid-feedback {
+    width: 100%;
+    font-size: 80%;
+    color: #dc3545;
+    margin-bottom: 10px;
+}
+
+tr:hover>td,
+tr.selected>td {
+    background-color: #999;
+    cursor: pointer;
+    color: #fcfcfc;
+    border: 1px solid #fcfcfc !important;
+}
+
+#mainHeader {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#mainHeader>div>input:nth-child(1) {
+    width: auto;
+    margin: 4px;
+}
+
+.menuitem.active {
+    background-color: #616161;
+    color: white;
+    font-weight: bold;
+}
