@@ -340,9 +340,7 @@ for(var indiceIEl = 0; indiceIEl < iElements.length; indiceIEl++){
 
 function ricercaGiocatori(){
     var valoreDaRicercare = document.getElementById("searchFieldGiocatori").value.toLowerCase();
-
     var rows = document.getElementById("tableGiocatori").tBodies[0].querySelectorAll("tr");
-
     for(var i = 0; i < rows.length; i++){
         var rowContainsSearchTerm = false;
         var cells = rows[i].querySelectorAll("td");
@@ -352,7 +350,6 @@ function ricercaGiocatori(){
                 break;
             }
         }
-
         if(!valoreDaRicercare || rowContainsSearchTerm){
             rows[i].style.display = "";
         } else {

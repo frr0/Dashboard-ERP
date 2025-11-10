@@ -104,7 +104,8 @@ function defaultLabelFromField(field) {
 async function loadAndRenderTable({ jsonUrl, labels = {}, tableSelector = '#area-principale .table-container table' }) {
     try {
         const data = await fetchJson(jsonUrl);
-        const result = (data && data.results && data.results[0]) ? data.results[0] : null;
+        // questi sono check
+        const result = data ? data.results[0] : null;
         const items = result && result.items ? result.items : [];
         const columns = result && result.columns ? result.columns : [];
 
@@ -134,6 +135,12 @@ async function loadAndRenderTable({ jsonUrl, labels = {}, tableSelector = '#area
                 const value = item[field];
                 $tr.append($('<td>').text(value != null ? value : ''));
             });
+
+            // in questo punto aggiungo i bottoni di modifica e elimina
+                const $azioni = $('<td class="azioni">')
+        .append('<button class="btn-modifica">✏️</button>')
+        .append('<button class="btn-elimina">🗑️</button>');
+    $tr.append($azioni);
             $tbody.append($tr);
         });
     } catch (error) {
@@ -261,3 +268,81 @@ async function caricaFornitori() {
     // Tabella dedicata nella vista sped.html
     return loadAndRenderTable({ jsonUrl: 'json/suppliers.json', labels, tableSelector: '#tabella-fornitori' });
 }
+
+// === Gestione pulsanti Modifica / Elimina ===
+$(document).on('click', '.btn-elimina', function () {
+    if (confirm("Vuoi davvero eliminare questa riga?")) {
+        $(this).closest('tr').remove();
+    }
+});
+
+let rigaCorrente = null;
+// Devi inizializzare il Modal di Bootstrap (una sola volta!)
+const myModal = new bootstrap.Modal(document.getElementById('popup-modifica'));
+
+// Unico handler per il click su MODIFICA
+$(document).on('click', '.btn-modifica', function () {
+    rigaCorrente = $(this).closest('tr');
+    const celle = rigaCorrente.find('td').not('.azioni');
+    let htmlCampi = '';
+    celle.each(function (i) {
+        const valore = $(this).text();
+        const label = $("thead th").eq(i).text();
+        htmlCampi += `
+            <div class="mb-3">
+                <label for="input-${i}" class="form-label">${label}</label>
+                <input type="text" id="input-${i}" class="form-control" data-index="${i}" value="${valore}">
+            </div>
+        `;
+    });
+    $("#popup-contenuto").html(htmlCampi);
+    myModal.show();
+});
+
+// Salva le modifiche
+$("#salva-modifica").click(function () {
+    if (rigaCorrente) {
+        // Modifica riga esistente
+        $("#popup-contenuto input").each(function () {
+            const index = $(this).data("index");
+            const nuovoValore = $(this).val();
+            rigaCorrente.find("td").not('.azioni').eq(index).text(nuovoValore);
+        });
+    } else {
+        // Aggiungi nuova riga
+        // Trova la tabella attiva
+        const $table = $("#area-principale .table-container:visible table");
+        const $tbody = $table.find('tbody');
+        let $tr = $('<tr>');
+        $("#popup-contenuto input").each(function () {
+            $tr.append($('<td>').text($(this).val()));
+        });
+        // Aggiungi cella azioni
+        $tr.append('<td class="azioni"><button class="btn-modifica">✏️</button><button class="btn-elimina">🗑️</button></td>');
+        $tbody.append($tr);
+    }
+    myModal.hide();
+});
+
+// Annulla: Ora è gestito anche dal bottone "btn-close" e "data-bs-dismiss"
+$("#annulla-modifica").click(function () {
+    myModal.hide(); 
+});
+
+// $(document).on('click', '.btn-success', function () {
+//     rigaCorrente = $(this).closest('tr');
+//     const celle = rigaCorrente.find('td').not('.azioni');
+//     let htmlCampi = '';
+//     celle.each(function (i) {
+//         const valore = $(this).text();
+//         const label = $("thead th").eq(i).text();
+//         htmlCampi += `
+//             <div class="mb-3">
+//                 <label for="input-${i}" class="form-label">${label}</label>
+//                 <input type="text" id="input-${i}" class="form-control" data-index="${i}" value="${valore}">
+//             </div>
+//         `;
+//     });
+//     $("#popup-contenuto").html(htmlCampi);
+//     myModal.show();
+// });

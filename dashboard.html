@@ -10,16 +10,17 @@
 </head>
 <body>
 
-    <h1>ERP Dashboard</h1>
-    
-    <nav class="navbar bg-light">
-  <div class="container-fluid">
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#menu-sidebar" aria-controls="menu-sidebar">
-      ☰ Apri Menu
-    </button>
-    <span class="navbar-brand mb-0 h1">ERP Dashboard</span>
-  </div>
-</nav>
+
+  <h1>ERP Dashboard</h1>
+
+  <nav class="navbar bg-light">
+    <div class="container-fluid">
+      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#menu-sidebar" aria-controls="menu-sidebar">
+        ☰ Apri Menu
+      </button>
+      <span class="navbar-brand mb-0 h1">ERP Dashboard</span>
+    </div>
+  </nav>
 
 <div class="offcanvas offcanvas-start" tabindex="-1" id="menu-sidebar" aria-labelledby="menu-sidebar-label">
   
@@ -66,8 +67,26 @@
   </div>
 </div>
 
+
 <main class="container-fluid px-0">
   <div id="area-principale"></div>
+  <div class="modal fade" id="popup-modifica" tabindex="-1" aria-labelledby="modificaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modificaLabel">Modifica riga</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="popup-contenuto"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="annulla-modifica" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-primary" id="salva-modifica">Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <footer>
@@ -77,5 +96,13 @@
 <!-- Scripts: load after content -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/dashboard.js"></script>
+<!-- Moduli JS separati -->
+<script src="js/dataLoader.js"></script>
+<script src="js/wrappers.js"></script>
+<script src="js/search.js"></script>
+<script src="js/tableActions.js"></script>
+<script src="js/loadHtml.js"></script>
+<script src="js/navigation.js"></script>
+<script src="dashboard.js"></script>
+
 </body>
