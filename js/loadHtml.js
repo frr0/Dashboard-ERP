@@ -1,20 +1,24 @@
-// loadHtml.js
-// Caricamento di frammenti HTML e callback + inizializzazione ricerca
-
-window.loadHtml = async function loadHtml(url, targetSelector, callback) {
+// Vanilla JS: carica frammenti HTML con fetch e opzionalmente esegue una callback
+// Usa anche initSearchIn per collegare la ricerca dopo ogni load
+console.log('loadHtml.js caricato');
+window.loadHtml = async function(url, targetSelector, callback) {
+  console.log(`loadHtml chiamato: ${url} -> ${targetSelector}`);
   try {
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`Caricamento HTML fallito: ${resp.status}`);
-    const html = await resp.text();
+    const response = await fetch(url);
+    console.log(`Fetch response per ${url}:`, response.status, response.ok);
+    const html = await response.text();
     const target = document.querySelector(targetSelector);
-    if (!target) return;
-    target.innerHTML = html;
-    if (callback) {
-      const maybe = callback();
-      if (maybe && typeof maybe.then === 'function') await maybe;
+    console.log(`Target ${targetSelector}:`, target);
+    if (target) {
+      target.innerHTML = html;
+      console.log(`HTML inserito, callback:`, callback);
+      if (callback) {
+        console.log(`Eseguo callback...`);
+        callback();
+      }
+      if (window.initSearchIn) window.initSearchIn(target);
     }
-    if (window.initSearchIn) window.initSearchIn(target);
-  } catch (e) {
-    console.error('Errore loadHtml', e);
+  } catch (err) {
+    console.error('Errore caricamento HTML:', err);
   }
 };
