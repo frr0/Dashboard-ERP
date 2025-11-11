@@ -1,3 +1,39 @@
+/* Barra di ricerca scura */
+input.form-control, .search-bar {
+    background: var(--app-surface);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+input.form-control:focus, .search-bar:focus {
+    background: var(--app-bg);
+    color: var(--app-text);
+    border-color: var(--app-accent);
+    box-shadow: 0 0 0 0.2rem #6ea8fe33;
+}
+
+/* Box modifica (edit) e elimina (delete) scuri */
+.btn-edit, .btn-delete {
+    background: var(--app-surface);
+    color: var(--app-accent);
+    border: 1px solid var(--app-border);
+    border-radius: 0.4rem;
+    padding: 0.3em 0.7em;
+    font-size: 1em;
+    transition: filter 0.15s;
+}
+.btn-edit:hover {
+    color: #e7e1e1;
+    background: #388bfd;
+    border-color: #388bfd;
+}
+.btn-delete {
+    color: #ff5c5c;
+}
+.btn-delete:hover {
+    color: #fff;
+    background: #ff5c5c;
+    border-color: #ff5c5c;
+}
 html, body {
     height: 100%;
 }
@@ -79,4 +115,8 @@ main {
 .table-container .table {
     width: 100%;
     margin-bottom: 0;
+}
+
+.card .card-title {
+    color: #ffeb3b; /* giallo */
 }

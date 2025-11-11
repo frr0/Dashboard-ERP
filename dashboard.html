@@ -14,12 +14,24 @@
   
 
   <nav class="navbar navbar-dark bg-dark">
+
     <div class="container-fluid">
       <div class="d-flex align-items-center gap-2">
         <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#menu-sidebar" aria-controls="menu-sidebar" id="btn-menu">
           ☰
         </button>
         <span class="navbar-brand mb-0 h1">ERP Dashboard</span>
+      </div>
+      <div class="d-flex align-items-center ms-auto gap-2">
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://ui-avatars.com/api/?name=Admin&background=6ea8fe&color=fff&rounded=true&size=32" alt="profile" width="32" height="32" class="rounded-circle me-2">
+            <span class="d-none d-md-inline">Admin</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
+            <li><a class="dropdown-item" href="#" id="logout-link">Log out</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
@@ -105,5 +117,18 @@
 <script src="js/navigation.js"></script>
 <script src="js/theme.js"></script>
 <script src="dashboard.js"></script>
+<script>
+// Logout handler
+document.addEventListener('DOMContentLoaded', function() {
+  var logout = document.getElementById('logout-link');
+  if (logout) {
+    logout.addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.removeItem('erp-logged');
+      window.location.href = 'login.html';
+    });
+  }
+});
+</script>
 
 </body>
