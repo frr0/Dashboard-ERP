@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome", 
+      "type": "chrome",
       "request": "launch",
       "name": "Avvia Chrome su localhost:5050",
       "url": "http://localhost:5050",

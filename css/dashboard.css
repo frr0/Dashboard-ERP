@@ -6,20 +6,58 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background: var(--app-bg);
+    color: var(--app-text);
 }
+
+/* Theme permanente scuro (solo grigio scuro con testo bianco) */
+:root {
+    --app-bg: #2e3236;
+    --app-surface: #3a3f44;
+    --app-text: #ffffff;
+    --app-border: #4b5157;
+    --app-muted: #9aa1a7;
+    --app-accent: #6ea8fe;
+    --app-footer-bg: #24282c;
+}
+
+nav.navbar, .offcanvas, .card, .modal-content {
+    background-color: var(--app-surface);
+    color: var(--app-text);
+}
+
+main {
+    background-color: var(--app-bg);
+}
+
+#area-principale {
+    background-color: var(--app-bg);
+    color: var(--app-text);
+}
+
+.nav-link { color: var(--app-text); }
+.nav-link:hover { color: var(--app-accent); }
+.nav-link.active { color: var(--app-accent); font-weight: 600; }
+
+footer {
+    background-color: var(--app-footer-bg);
+    color: var(--app-text);
+    padding: 1rem;
+    text-align: center;
+    margin-top: auto;
+    width: 100%;
+}
+
+.border, .table, .offcanvas, .card, .modal-content { border-color: var(--app-border) !important; }
+
+.table thead th { background: var(--app-surface); }
+.table tbody tr { background: var(--app-surface); }
+.table tbody tr:hover { filter: brightness(1.05); }
 
 main {
     flex: 1;
     padding-left: 0 !important;
     padding-right: 0 !important;
-}
-
-footer {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    text-align: center;
-    margin-top: auto;
-    width: 100%;
 }
 
 /* Padding per il contenuto */
