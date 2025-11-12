@@ -1,3 +1,6 @@
+.card .card-body .text-muted {
+    color: #fff !important;
+}
 /* Barra di ricerca scura */
 input.form-control, .search-bar {
     background: var(--app-surface);
@@ -9,6 +12,12 @@ input.form-control:focus, .search-bar:focus {
     color: var(--app-text);
     border-color: var(--app-accent);
     box-shadow: 0 0 0 0.2rem #6ea8fe33;
+}
+
+/* Placeholder bianco per la ricerca */
+input.form-control.ricerca::placeholder {
+    color: #fff;
+    opacity: 1;
 }
 
 /* Box modifica (edit) e elimina (delete) scuri */
@@ -118,5 +127,30 @@ main {
 }
 
 .card .card-title {
-    color: #ffeb3b; /* giallo */
+    color: #fff;
 }
+
+/* Azioni tabella: icone senza sfondo/box */
+.azioni { white-space: nowrap; }
+.azioni .icon-btn {
+    background: transparent;
+    border: none;
+    padding: 0.2rem 0.35rem;
+    margin: 0 0.1rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--app-muted);
+    font-size: 1.05rem;
+}
+.azioni .btn-modifica { color: var(--app-accent); }
+.azioni .btn-elimina { color: #ff5c5c; }
+.azioni .icon-btn:hover { filter: brightness(1.15); }
+.azioni .icon-btn:focus-visible {
+    outline: 2px solid var(--app-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Paginazione tabella */
+.table-pager { justify-content: flex-end; }
+.table-pager .pager-info { color: #ffffff; }

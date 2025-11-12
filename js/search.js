@@ -21,7 +21,23 @@ function debounce(fn, delay) {
 function applyFilter(query) {
   const q = (query || '').toLowerCase().trim();
   const tables = document.querySelectorAll('#area-principale table');
-  tables.forEach(table => filterTable(table, q));
+  tables.forEach(table => {
+    // Paginazione-aware filtering: usa lo stato se presente
+    if (table._erpState) {
+      const state = table._erpState;
+      const data = state.items || [];
+      state.filteredItems = q
+        ? data.filter(obj => Object.values(obj).some(v => String(v ?? '').toLowerCase().includes(q)))
+        : null;
+      state.page = 1; // reset pagina
+      if (typeof window.__erpRenderPage === 'function') {
+        window.__erpRenderPage(table);
+      }
+    } else {
+      // Fallback: vecchio filtro row-by-row
+      filterTable(table, q);
+    }
+  });
 }
 
 function filterTable(table, q) {
