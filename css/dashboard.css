@@ -154,3 +154,80 @@ main {
 /* Paginazione tabella */
 .table-pager { justify-content: flex-end; }
 .table-pager .pager-info { color: #ffffff; }
+
+/* Tabella dark con righe alternate */
+.table-dark-striped, .gridjs-dark.gridjs-table {
+    width: 100%;
+    background-color: var(--app-surface);
+    color: var(--app-text);
+    border-collapse: collapse;
+}
+.table-dark-striped thead th, .gridjs-dark thead th {
+    background: #24282c;
+    color: #fff;
+    border-bottom: 1px solid var(--app-border);
+}
+.table-dark-striped tbody tr:nth-child(odd), .gridjs-dark tbody tr:nth-child(odd) { background: #2f3337; }
+.table-dark-striped tbody tr:nth-child(even), .gridjs-dark tbody tr:nth-child(even) { background: #3a3f44; }
+.table-dark-striped tbody tr:hover, .gridjs-dark tbody tr:hover { filter: brightness(1.1); }
+.table-dark-striped td, .table-dark-striped th, .gridjs-dark td, .gridjs-dark th { padding: 0.5rem 0.6rem; }
+
+/* Forza celle scure anche se il tema Grid.js applica bianco */
+.gridjs-table td, .gridjs-table th {
+    background-color: var(--app-surface) !important;
+    color: var(--app-text) !important;
+    border-color: var(--app-border) !important;
+}
+.gridjs-table tbody tr:nth-child(odd) td { background-color: #2f3337 !important; }
+.gridjs-table tbody tr:nth-child(even) td { background-color: #3a3f44 !important; }
+.gridjs-table thead th { background-color: #24282c !important; }
+
+/* Nascondi vecchia barra ricerca quando si usa Grid.js */
+.table-container:has(.gridjs-mount) input.ricerca { display: none !important; }
+
+/* Grid.js wrapper & pagination fondo scuro */
+.gridjs-wrapper,
+.gridjs-container,
+.gridjs-footer,
+.gridjs-pagination,
+.gridjs-pages,
+.gridjs-search { background: var(--app-surface) !important; }
+.gridjs-search input { 
+    background: var(--app-bg) !important;
+    color: var(--app-text) !important;
+    border: 1px solid var(--app-border) !important;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+.gridjs-footer { border-top: 1px solid var(--app-border); padding: 0.4rem 0.6rem; }
+.gridjs-pagination button, .gridjs-pagination .gridjs-page {
+    background: #3a3f44 !important;
+    color: var(--app-text) !important;
+    border: 1px solid var(--app-border) !important;
+}
+.gridjs-pagination button:hover, .gridjs-pagination .gridjs-page:hover { filter: brightness(1.15); }
+.gridjs-pagination .gridjs-currentPage, .gridjs-pagination .gridjs-page.current {
+    background: var(--app-accent) !important;
+    color: #fff !important;
+    border-color: var(--app-accent) !important;
+}
+
+/* Colonna azioni: icone nude */
+.table-dark-striped .azioni button,
+.gridjs-dark .azioni button,
+.gridjs-dark button.icon-btn,
+.table-dark-striped button.icon-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 0.15rem 0.35rem;
+    margin: 0 0.1rem;
+    color: var(--app-accent);
+    font-size: 1rem;
+    cursor: pointer;
+}
+.table-dark-striped .azioni button.btn-elimina,
+.gridjs-dark button.btn-elimina { color: #ff5c5c; }
+.table-dark-striped .azioni button:hover,
+.gridjs-dark button.icon-btn:hover { transform: scale(1.1); }
+.table-dark-striped .azioni button:focus-visible,
+.gridjs-dark button.icon-btn:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 2px; border-radius: 4px; }
