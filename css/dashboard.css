@@ -154,3 +154,24 @@ main {
 /* Paginazione tabella */
 .table-pager { justify-content: flex-end; }
 .table-pager .pager-info { color: #ffffff; }
+
+/* Orders page */
+.orders-page { display: flex; flex-direction: column; gap: 12px; }
+.orders-master, .orders-detail { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: .5rem; }
+.orders-master { padding: 12px; min-height: 44vh; }
+.orders-detail { padding: 12px; min-height: 44vh; }
+.orders-toolbar .btn { white-space: nowrap; }
+.small-muted { color: var(--app-muted); font-size: .85rem; }
+
+/* Tabulator theme tweaks to match dark */
+.tabulator { background: var(--app-surface); color: var(--app-text); border: 1px solid var(--app-border); border-radius: .5rem; }
+.tabulator .tabulator-header { background: var(--app-surface); border-bottom: 1px solid var(--app-border); }
+.tabulator .tabulator-row { background: var(--app-surface); border-bottom: 1px solid var(--app-border); }
+.tabulator .tabulator-row:hover { filter: brightness(1.05); }
+.tabulator .tabulator-cell { border-right: 1px solid var(--app-border); }
+.tabulator .tabulator-footer { background: var(--app-surface); border-top: 1px solid var(--app-border); }
+
+/* AG Grid sizing */
+#orders-grid { height: 34vh; }
+#lines-grid { height: 30vh; }
+#clienti-grid { height: 34vh; }

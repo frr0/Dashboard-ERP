@@ -9,10 +9,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const email = document.getElementById('floatingInput').value.trim();
     const password = document.getElementById('floatingPassword').value;
 
-    // Demo: login hardcoded (admin@example.com / 1234)
+    // Demo credentials:
+    // - Admin: admin@admin.com / 1234
+    // - User:  user@user.com   / 1234
+    let role = null;
     if (email === 'admin@admin.com' && password === '1234') {
-      // Salva login (demo, solo localStorage)
+      role = 'admin';
+    } else if (email === 'user@user.com' && password === '1234') {
+      role = 'user';
+    }
+
+    if (role) {
       localStorage.setItem('erp-logged', '1');
+      localStorage.setItem('erp-role', role);
+      localStorage.setItem('erp-email', email);
       window.location.href = 'dashboard.html';
     } else {
       alert('Credenziali non valide!');

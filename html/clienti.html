@@ -1,15 +1,71 @@
-<h2>Gestione Clienti</h2>
-<!-- <p>toolbar e la tabella con l'elenco dei clienti.</p> -->
+<div class="orders-page">
+  <div class="orders-master">
+    <div class="orders-toolbar row g-2 align-items-center mb-2">
+      <div class="col-12 col-md">
+        <input id="clienti-search" type="text" class="form-control" placeholder="Cerca clienti...">
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button id="clienti-new" class="btn btn-success">Nuovo</button>
+        <button id="clienti-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="clienti-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="clienti-export" class="btn btn-outline-primary">Export Excel</button>
+      </div>
+    </div>
+    <div id="clienti-grid" class="ag-theme-alpine-dark"></div>
+  </div>
 
-<div class="d-flex justify-content-between mb-3">
-  <input type="text" class="form-control ricerca" placeholder="Ricerca...">
-    <button class="btn btn-success ms-2">Nuovo</button>
+  <div class="orders-detail" id="clienti-detail">
+    <h6 class="mb-3">Dettaglio cliente</h6>
+    <form id="clienti-form" class="row g-3">
+      <div class="col-6 col-md-2">
+        <label for="cli-id" class="form-label">ID</label>
+        <input id="cli-id" name="customer_id" class="form-control" type="number" readonly title="ID Cliente" placeholder="ID">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="cli-azienda" class="form-label">Azienda</label>
+        <input id="cli-azienda" name="company_name" class="form-control" type="text" title="Nome azienda" placeholder="Azienda">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="cli-contatto" class="form-label">Contatto</label>
+        <input id="cli-contatto" name="contact_name" class="form-control" type="text" title="Nome contatto" placeholder="Contatto">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="cli-titolo" class="form-label">Titolo</label>
+        <input id="cli-titolo" name="contact_title" class="form-control" type="text" title="Titolo contatto" placeholder="Titolo">
+      </div>
+      <div class="col-12 col-md-8">
+        <label for="cli-indirizzo" class="form-label">Indirizzo</label>
+        <input id="cli-indirizzo" name="address" class="form-control" type="text" title="Indirizzo" placeholder="Indirizzo">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="cli-citta" class="form-label">Città</label>
+        <input id="cli-citta" name="city" class="form-control" type="text" title="Città" placeholder="Città">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="cli-regione" class="form-label">Regione</label>
+        <input id="cli-regione" name="region" class="form-control" type="text" title="Regione" placeholder="Regione">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="cli-cap" class="form-label">CAP</label>
+        <input id="cli-cap" name="postal_code" class="form-control" type="text" title="CAP" placeholder="CAP">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="cli-paese" class="form-label">Paese</label>
+        <input id="cli-paese" name="country" class="form-control" type="text" title="Paese" placeholder="Paese">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="cli-telefono" class="form-label">Telefono</label>
+        <input id="cli-telefono" name="phone" class="form-control" type="text" title="Telefono" placeholder="Telefono">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="cli-fax" class="form-label">Fax</label>
+        <input id="cli-fax" name="fax" class="form-control" type="text" title="Fax" placeholder="Fax">
+      </div>
+      <div class="col-12">
+        <button id="clienti-save" type="button" class="btn btn-primary">Salva</button>
+      </div>
+    </form>
+  </div>
 </div>
-<div class="table-container">
-  <table class="table table-striped table-dark">
-    <thead></thead>
-    <tbody>
-      <tr><td colspan="12" class="text-muted">Caricamento…</td></tr>
-    </tbody>
-  </table>
-</div>
+
+<!-- Inizializzazione spostata in js/clienti_aggrid.js -->

@@ -1,15 +1,107 @@
-<h2>Gestione Ordini</h2>
-<p>Qui ci sarà la toolbar e la tabella con l'elenco degli ordini.</p>
+<!-- Styles moved to css/dashboard.css -->
 
-<div class="d-flex justify-content-between mb-3">
-  <input type="text" class="form-control ricerca" placeholder="Ricerca...">
-    <button class="btn btn-success ms-2">Nuovo</button>
-</div>
-<div class="table-container">
-  <table class="table table-striped table-dark">
-    <thead></thead>
-    <tbody>
-      <tr><td colspan="12" class="text-muted">Caricamento…</td></tr>
-    </tbody>
-  </table>
+<div class="orders-page">
+  <div class="orders-master">
+    <div class="orders-toolbar row g-2 align-items-center mb-2">
+      <div class="col-12 col-md">
+        <input id="order-search" type="text" class="form-control" placeholder="Cerca per ID, cliente, destinatario, città...">
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button id="btn-new-order" class="btn btn-success">Nuovo</button>
+        <button id="btn-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="btn-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="btn-export" class="btn btn-outline-primary">Export Excel</button>
+        <button id="btn-email" class="btn btn-outline-warning">Invia PDF via email</button>
+      </div>
+    </div>
+
+    <div id="orders-grid" class="ag-theme-alpine-dark"></div>
+  </div>
+
+  <div class="orders-detail">
+    <ul class="nav nav-tabs" id="orderTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-order-tab" data-bs-toggle="tab" data-bs-target="#tab-order" type="button" role="tab">Dettaglio ordine</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-lines-tab" data-bs-toggle="tab" data-bs-target="#tab-lines" type="button" role="tab">Elenco prodotti acquistati</button>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade show active p-3" id="tab-order" role="tabpanel">
+        <form id="order-form" class="row g-3">
+          <div class="col-6 col-md-2">
+            <label for="of-order-id" class="form-label">ID Ordine</label>
+            <input id="of-order-id" class="form-control" type="number" readonly>
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="of-order-date" class="form-label">Data Ordine</label>
+            <input id="of-order-date" class="form-control" type="date">
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="of-required-date" class="form-label">Data Richiesta</label>
+            <input id="of-required-date" class="form-control" type="date">
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="of-shipped-date" class="form-label">Data Spedizione</label>
+            <input id="of-shipped-date" class="form-control" type="date">
+          </div>
+
+          <div class="col-6 col-md-2">
+            <label for="of-customer-id" class="form-label">ID Cliente</label>
+            <input id="of-customer-id" class="form-control" type="number">
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="of-employee-id" class="form-label">ID Dipendente</label>
+            <input id="of-employee-id" class="form-control" type="number">
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="of-ship-name" class="form-label">Destinatario</label>
+            <input id="of-ship-name" class="form-control" type="text">
+          </div>
+          <div class="col-12 col-md-8">
+            <label for="of-ship-address" class="form-label">Indirizzo</label>
+            <input id="of-ship-address" class="form-control" type="text">
+          </div>
+
+          <div class="col-6 col-md-3">
+            <label for="of-ship-city" class="form-label">Città</label>
+            <input id="of-ship-city" class="form-control" type="text">
+          </div>
+          <div class="col-6 col-md-3">
+            <label for="of-ship-region" class="form-label">Regione</label>
+            <input id="of-ship-region" class="form-control" type="text">
+          </div>
+          <div class="col-6 col-md-3">
+            <label for="of-ship-postal" class="form-label">CAP</label>
+            <input id="of-ship-postal" class="form-control" type="text">
+          </div>
+          <div class="col-6 col-md-3">
+            <label for="of-ship-country" class="form-label">Paese</label>
+            <input id="of-ship-country" class="form-control" type="text">
+          </div>
+
+          <div class="col-6 col-md-2">
+            <label for="of-freight" class="form-label">Spedizione (€)</label>
+            <input id="of-freight" class="form-control" type="number" step="0.01">
+          </div>
+
+          <div class="col-12">
+            <button id="btn-save-order" type="button" class="btn btn-primary">Salva</button>
+            <span class="small-muted ms-2" id="order-status"></span>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-pane fade p-3" id="tab-lines" role="tabpanel">
+        <div class="d-flex gap-2 mb-2">
+          <button id="btn-add-line" class="btn btn-outline-success btn-sm" type="button">Aggiungi riga</button>
+          <button id="btn-remove-line" class="btn btn-outline-danger btn-sm" type="button">Rimuovi selezionate</button>
+          <button id="btn-save-lines" class="btn btn-primary btn-sm" type="button">Salva</button>
+        </div>
+        <div id="lines-grid" class="ag-theme-alpine-dark"></div>
+      </div>
+    </div>
+  </div>
 </div>

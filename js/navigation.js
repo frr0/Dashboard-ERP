@@ -20,6 +20,19 @@ window.setupNavigation = function() {
     const [file, cb] = routes[selector];
     el.addEventListener('click', evt => {
       evt.preventDefault();
+
+      // Gestione classe "active"
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      el.classList.add('active');
+
+      // Role guard: prevent users from accessing Dipendenti
+      const role = localStorage.getItem('erp-role') || 'admin';
+      if (selector === '#link-dipendenti' && role === 'user') {
+        alert('Accesso non autorizzato alla sezione Dipendenti.');
+        return;
+      }
       console.log('Click su', selector, '-> html/' + file);
       window.loadHtml(`html/${file}`, '#area-principale', cb);
       const closeBtn = document.querySelector('.btn-close');
