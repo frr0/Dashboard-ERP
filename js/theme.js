@@ -1,3 +1,10 @@
+// theme.js compatto
+addEventListener('DOMContentLoaded',()=>{
+    const b=document.body,t=document.getElementById('btn-theme');
+    const s=()=>{const m=localStorage.getItem('theme');if(m){b.classList.toggle('theme-dark',m==='dark');t.textContent=m==='dark'?'☀️':'🌙';}};
+    s();
+    t.addEventListener('click',()=>{b.classList.toggle('theme-dark');const d=b.classList.contains('theme-dark');localStorage.setItem('theme',d?'dark':'light');t.textContent=d?'☀️':'🌙';});
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeButton = document.getElementById('btn-theme');

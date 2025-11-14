@@ -1,10 +1,7 @@
-// login.js - Gestione semplice del login demo
-
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.querySelector('form');
-  if (!form) return;
-
-  form.addEventListener('submit', function (e) {
+// login.js compatto
+document.addEventListener('DOMContentLoaded',()=>{
+  const f=document.querySelector('form');if(!f)return;
+  f.addEventListener('submit',e=>{
     e.preventDefault();
     const email = document.getElementById('floatingInput').value.trim();
     const password = document.getElementById('floatingPassword').value;

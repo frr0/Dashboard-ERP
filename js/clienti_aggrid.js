@@ -15,7 +15,9 @@
       detail: {
         paneId: 'clienti-detail',
         formId: 'clienti-form',
-        saveBtnId: 'clienti-save'
+        saveBtnId: 'clienti-save',
+        newBtnId: 'clienti-detail-new',
+        deleteBtnId: 'clienti-detail-delete'
       },
       columns: [
         { headerName:'ID', field:'customer_id', width:100 },
