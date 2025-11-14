@@ -15,6 +15,8 @@ window.loadHtml = async function(url, targetSelector, callback) {
       return;
     }
     target.innerHTML = html;
+    // Dispatch custom event so Grid.js initializer or other listeners can act
+    document.dispatchEvent(new CustomEvent('page:loaded', { detail: { url, target } }));
 
     console.log(`HTML inserito, callback:`, callback);
     if (typeof callback === 'function') {

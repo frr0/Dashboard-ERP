@@ -5,145 +5,93 @@
   const LS_UPDATED = 'erp-orders-updated'; // map order_id -> fields
   const LS_LINES_PREFIX = 'erp-order-lines-';
 
-  const MONTHS = {
-    JAN:0, FEB:1, MAR:2, APR:3, MAY:4, JUN:5,
-    JUL:6, AUG:7, SEP:8, OCT:9, NOV:10, DEC:11
-  };
-
-  function tryParseDate(s){
-    if(!s) return null;
-    // accepts formats: 09-DEC-96 or ISO yyyy-mm-dd
-    if(/\d{2}-[A-Z]{3}-\d{2}/.test(s)){
-      const [dd,mon,yy] = s.split('-');
-      const year = parseInt(yy,10) + 1900 + (parseInt(yy,10) < 70 ? 2000-1900 : 0);
-      return new Date(year, MONTHS[mon.toUpperCase()], parseInt(dd,10));
+  // orders.js - Grid.js per tabella Ordini (inizializzazione anche su caricamenti dinamici)
+  (function(){
+    async function loadOrders(){
+      try {
+        const res = await fetch('json/orders.json?_=' + Date.now(), { cache:'no-store' });
+        const data = await res.json();
+        return data?.results?.[0]?.items || data || [];
+      } catch(e){
+        console.error('Errore fetch ordini', e);
+        return [];
+      }
     }
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  function toInputDate(d){
-    if(!d) return '';
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,'0');
-    const dd = String(d.getDate()).padStart(2,'0');
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  function fromInputDate(s){
-    if(!s) return null;
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  function fmtCurrency(n){
-    if(n==null || n==='') return '';
-    return Number(n).toFixed(2);
-  }
 
-  function loadLS(key, def){
-    try{ return JSON.parse(localStorage.getItem(key) || JSON.stringify(def)); }catch{ return def; }
-  }
-  function saveLS(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
-
-  async function fetchJSON(url){
-    const bust = (url.includes('?')?'&':'?') + '_=' + Date.now();
-    const res = await fetch(url + bust, { cache:'no-store' });
-    const data = await res.json();
-    return data?.results?.[0]?.items || [];
-  }
-
-  async function loadDatasets(){
-    const [orders, customers, products] = await Promise.all([
-      fetchJSON('json/orders.json'),
-      fetchJSON('json/customers.json'),
-      fetchJSON('json/products.json')
-    ]);
-    const productsById = new Map(products.map(p => [p.product_id, p]));
-    const customersById = new Map(customers.map(c => [c.customer_id, c]));
-    return { orders, customersById, productsById };
-  }
-
-  function mergeOrders(base){
-    const added = loadLS(LS_ADDED, []);
-    const deleted = new Set(loadLS(LS_DELETED, []));
-    const updated = loadLS(LS_UPDATED, {});
-    const all = base.concat(added).filter(o => !deleted.has(o.order_id));
-    return all.map(o => ({ ...o, ...(updated[o.order_id]||{}) }));
-  }
-
-  function sortByDateDesc(orders){
-    return orders.slice().sort((a,b)=>{
-      const da = tryParseDate(a.order_date) || new Date(0);
-      const db = tryParseDate(b.order_date) || new Date(0);
-      return db - da;
-    });
-  }
-
-  function renderOrdersTable(orders){
-    const tbody = document.querySelector('#orders-table tbody');
-    if(!tbody) return;
-    if(!orders.length){
-      tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Nessun ordine trovato</td></tr>';
-      return;
+    function buildColumns(){
+      return [
+        { id: 'order_id', name: 'ID', width: 80 },
+        { id: 'customer_id', name: 'Cliente', width: 90 },
+        { id: 'employee_id', name: 'Dipendente', width: 110 },
+        { id: 'order_date', name: 'Data ordine' },
+        { id: 'required_date', name: 'Data richiesta' },
+        { id: 'shipped_date', name: 'Data spedizione' },
+        { id: 'ship_name', name: 'Destinatario' },
+        { id: 'ship_city', name: 'Città' },
+        { id: 'freight', name: 'Spedizione €' }
+      ];
     }
-    const rows = orders.map(o=>{
-      const date = tryParseDate(o.order_date);
-      const fmt = date ? toInputDate(date) : '';
-      return `<tr data-id="${o.order_id}">`+
-        `<td>${o.order_id}</td>`+
-        `<td>${fmt}</td>`+
-        `<td>${escapeHtml(o.ship_name||'')}</td>`+
-        `<td>${escapeHtml(o.ship_city||'')}</td>`+
-        `<td>${escapeHtml(o.ship_country||'')}</td>`+
-        `<td class="text-end">${fmtCurrency(o.freight)}</td>`+
-      `</tr>`;
-    }).join('');
-    tbody.innerHTML = rows;
-  }
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
-  }
+    function toGridRows(raw){
+      return raw.map(o => [
+        o.order_id,
+        o.customer_id,
+        o.employee_id,
+        o.order_date,
+        o.required_date,
+        o.shipped_date,
+        o.ship_name,
+        o.ship_city,
+        o.freight
+      ]);
+    }
 
-  function getSelectedOrderId(){
-    const tr = document.querySelector('#orders-table tbody tr.selected');
-    return tr ? Number(tr.dataset.id) : null;
-  }
+    function initSearch(grid, data){
+      const searchInput = document.getElementById('order-search');
+      if (!searchInput) return;
+      searchInput.addEventListener('input', function(){
+        const term = this.value.toLowerCase();
+        const filtered = !term ? data : data.filter(o => (
+          String(o.order_id).includes(term) ||
+          String(o.customer_id || '').toLowerCase().includes(term) ||
+          String(o.ship_name || '').toLowerCase().includes(term) ||
+          String(o.ship_city || '').toLowerCase().includes(term)
+        ));
+        grid.updateConfig({ data: toGridRows(filtered) }).forceRender();
+      });
+    }
 
-  function selectRowById(id){
-    document.querySelectorAll('#orders-table tbody tr').forEach(tr=>{
-      tr.classList.toggle('selected', Number(tr.dataset.id)===id);
-    });
-  }
+    async function initOrdersGrid(){
+      const container = document.getElementById('orders-grid');
+      if(!container || typeof gridjs === 'undefined' || container.dataset.gridjsInit) return;
+      const rawData = await loadOrders();
+      const columns = buildColumns();
+      const grid = new gridjs.Grid({
+        columns,
+        data: toGridRows(rawData),
+        pagination:{ enabled:true, limit:15 },
+        sort:true,
+        resizable:true,
+        className:{ table:'table table-dark table-striped mb-0' },
+        language:{
+          search:{ placeholder:'Cerca...' },
+          pagination:{
+            previous:'Precedente', next:'Successivo',
+            navigate:(p,ps)=>'Pagina '+p+' di '+ps,
+            page:p=>'Pagina '+p,
+            showing:'Mostra', of:'di', to:'a', results:'righe'
+          }
+        }
+      });
+      grid.render(container);
+      container.dataset.gridjsInit = '1';
+      initSearch(grid, rawData);
+    }
 
-  function loadLines(orderId){
-    return loadLS(LS_LINES_PREFIX + orderId, []);
-  }
-  function saveLines(orderId, lines){
-    saveLS(LS_LINES_PREFIX + orderId, lines);
-  }
-
-  function fillOrderForm(order){
-    const byId = id => document.getElementById(id);
-    byId('of-order-id').value = order.order_id ?? '';
-    byId('of-order-date').value = toInputDate(tryParseDate(order.order_date));
-    byId('of-required-date').value = toInputDate(tryParseDate(order.required_date));
-    byId('of-shipped-date').value = toInputDate(tryParseDate(order.shipped_date));
-    byId('of-customer-id').value = order.customer_id ?? '';
-    byId('of-employee-id').value = order.employee_id ?? '';
-    byId('of-ship-name').value = order.ship_name ?? '';
-    byId('of-ship-address').value = order.ship_address ?? '';
-    byId('of-ship-city').value = order.ship_city ?? '';
-    byId('of-ship-region').value = order.ship_region ?? '';
-    byId('of-ship-postal').value = order.ship_postal_code ?? '';
-    byId('of-ship-country').value = order.ship_country ?? '';
-    byId('of-freight').value = order.freight ?? '';
-  }
-
-  function readOrderForm(){
-    const byId = id => document.getElementById(id).value;
-    return {
-      order_id: Number(document.getElementById('of-order-id').value),
-      order_date: byId('of-order-date'),
-      required_date: byId('of-required-date'),
+    function tryInit(){ initOrdersGrid(); }
+    document.addEventListener('DOMContentLoaded', tryInit);
+    document.addEventListener('page:loaded', tryInit);
+  })();
       shipped_date: byId('of-shipped-date'),
       customer_id: Number(byId('of-customer-id')||0)||null,
       employee_id: Number(byId('of-employee-id')||0)||null,

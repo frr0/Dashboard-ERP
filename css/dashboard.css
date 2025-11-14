@@ -158,7 +158,9 @@ main {
 /* Orders page */
 .orders-page { display: flex; flex-direction: column; gap: 12px; }
 .orders-master, .orders-detail { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: .5rem; }
-.orders-master { padding: 12px; min-height: 44vh; }
+.orders-master { padding: 12px; min-height: 44vh; display:flex; flex-direction:column; }
+.orders-master .orders-toolbar { flex:0 0 auto; }
+#orders-grid, #clienti-grid { flex:1 1 auto; overflow:auto; }
 .orders-detail { padding: 12px; min-height: 44vh; }
 .orders-toolbar .btn { white-space: nowrap; }
 .small-muted { color: var(--app-muted); font-size: .85rem; }
@@ -171,7 +173,16 @@ main {
 .tabulator .tabulator-cell { border-right: 1px solid var(--app-border); }
 .tabulator .tabulator-footer { background: var(--app-surface); border-top: 1px solid var(--app-border); }
 
-/* AG Grid sizing */
-#orders-grid { height: 34vh; }
-#lines-grid { height: 30vh; }
-#clienti-grid { height: 34vh; }
+/* Grid.js dark striped styling */
+.gridjs-table { background: var(--app-surface); border:1px solid var(--app-border); border-radius:.5rem; }
+.gridjs-thead .gridjs-th { background: var(--app-surface); color: var(--app-text); border-color: var(--app-border); }
+.gridjs-tbody .gridjs-tr { background-color:#353a3f; }
+.gridjs-tbody .gridjs-tr:nth-child(odd) { background-color:#2f3438; }
+.gridjs-tbody .gridjs-td { background-color:inherit !important; }
+.gridjs-tbody .gridjs-td:not([class*="gridjs-"]) { background-color:inherit !important; }
+.gridjs-tbody .gridjs-td:empty { background-color:#23272b !important; }
+.gridjs-tbody .gridjs-tr:hover { filter:brightness(1.08); }
+.gridjs-tbody .gridjs-td { border-color: var(--app-border); color: var(--app-text); }
+.gridjs-footer { background: var(--app-surface); border-top:1px solid var(--app-border); }
+.gridjs-pagination .gridjs-pages button { background:#2f3438; color:var(--app-text); border-color:var(--app-border); }
+.gridjs-pagination .gridjs-pages button:hover { background:#3d4349; }
