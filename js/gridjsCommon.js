@@ -448,20 +448,7 @@ async function initOrdini() {
   });
   ordiniGrid.render(ordiniDiv);
   ordiniDiv.dataset.gridjsInit = '1';
-  // Ricerca ordini
-  var orderInput = document.getElementById('order-search');
-  if (orderInput) {
-    orderInput.addEventListener('input', function () {
-      var t = this.value.toLowerCase().trim();
-      var filtered = !t ? ordiniData : ordiniData.filter(function (o) {
-        return String(o.order_id).indexOf(t) !== -1 ||
-          String(o.customer_id || '').toLowerCase().indexOf(t) !== -1 ||
-          String(o.ship_name || '').toLowerCase().indexOf(t) !== -1 ||
-          String(o.ship_city || '').toLowerCase().indexOf(t) !== -1;
-      });
-      ordiniGrid.updateConfig({ data: filtered.map(ordiniRowMapper) }).forceRender();
-    });
-  }
+  makeSearcher('order-search', ordiniData, ordiniGrid, ordiniRowMapper);
   
   // Inizializza il detail manager per ordini
   if (typeof initDetailManager === 'function') {

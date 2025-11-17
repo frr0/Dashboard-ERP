@@ -188,8 +188,8 @@ main {
 .gridjs-thead .gridjs-th { background: var(--app-surface); color: var(--app-text); border-color: var(--app-border); }
 .gridjs-tbody .gridjs-tr { background-color:#353a3f; }
 .gridjs-tbody .gridjs-tr:nth-child(odd) { background-color:#2f3438; }
-.gridjs-tbody .gridjs-td { background-color:inherit !important; }
-.gridjs-tbody .gridjs-td:not([class*="gridjs-"]) { background-color:inherit !important; }
+.gridjs-tbody .gridjs-td { background-color:inherit; }
+.gridjs-tbody .gridjs-td:not([class*="gridjs-"]) { background-color:inherit; }
 .gridjs-tbody .gridjs-td:empty { background-color:#23272b !important; }
 .gridjs-tbody .gridjs-tr:hover { filter:brightness(1.08); }
 .gridjs-tbody .gridjs-td { border-color: var(--app-border); color: var(--app-text); }
@@ -216,4 +216,10 @@ main {
   background: #1976d2 !important;
   color: #fff !important;
   border-color: #1976d2 !important;
+}
+
+.dipendenti-detail textarea {
+  background-color: #2f3438;
+  color: #ffffff;
+  border-color: #beb6b6;
 }
