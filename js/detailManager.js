@@ -107,6 +107,11 @@ function setupRowClick(entityName, fieldMapping) {
         if (detailDiv) {
           detailDiv.style.display = 'block';
         }
+        
+        // Se è un ordine, carica i dettagli dei prodotti acquistati
+        if (entityName === 'orders' && fullData.order_id) {
+          loadOrderDetails(fullData.order_id);
+        }
       }
     });
 
@@ -454,3 +459,90 @@ style.textContent = '\n' +
   '    color: #fff !important;\n' +
   '  }\n';
 document.head.appendChild(style);
+
+// Funzione per caricare i dettagli dei prodotti di un ordine
+async function loadOrderDetails(orderId) {
+  var linesGridDiv = document.getElementById('lines-grid');
+  if (!linesGridDiv) {
+    return;
+  }
+
+  try {
+    // Carica i dati dei dettagli ordine
+    var response = await fetch('json/orderDetails.json');
+    var data = await response.json();
+    var orderDetails = [];
+    
+    if (data && data.results && data.results[0] && data.results[0].items) {
+      orderDetails = data.results[0].items;
+    }
+
+    // Filtra i dettagli per l'ordine selezionato
+    var filteredDetails = orderDetails.filter(function(detail) {
+      return detail.order_id === orderId;
+    });
+
+    // Carica i dati dei prodotti per ottenere i nomi
+    var productsResponse = await fetch('json/products.json');
+    var productsData = await productsResponse.json();
+    var products = [];
+    
+    if (productsData && productsData.results && productsData.results[0] && productsData.results[0].items) {
+      products = productsData.results[0].items;
+    }
+
+    // Crea una mappa prodotto_id -> nome_prodotto
+    var productMap = {};
+    for (var i = 0; i < products.length; i++) {
+      productMap[products[i].product_id] = products[i].product_name;
+    }
+
+    // Prepara i dati per la griglia
+    var gridData = [];
+    for (var i = 0; i < filteredDetails.length; i++) {
+      var detail = filteredDetails[i];
+      var productName = productMap[detail.product_id] || 'N/A';
+      var subtotal = detail.unit_price * detail.quantity * (1 - detail.discount);
+      
+      gridData.push([
+        detail.product_id,
+        productName,
+        detail.unit_price.toFixed(2),
+        detail.quantity,
+        (detail.discount * 100).toFixed(0) + '%',
+        subtotal.toFixed(2)
+      ]);
+    }
+
+    // Distruggi la griglia esistente se presente
+    if (window.detailManager.orderLinesGrid) {
+      window.detailManager.orderLinesGrid.destroy();
+    }
+
+    // Crea la nuova griglia
+    var linesGrid = new gridjs.Grid({
+      columns: [
+        { id: 'product_id', name: 'ID Prodotto', width: '100px' },
+        { id: 'product_name', name: 'Nome Prodotto' },
+        { id: 'unit_price', name: 'Prezzo Unitario', width: '120px' },
+        { id: 'quantity', name: 'Quantità', width: '100px' },
+        { id: 'discount', name: 'Sconto', width: '100px' },
+        { id: 'subtotal', name: 'Subtotale €', width: '120px' }
+      ],
+      data: gridData,
+      pagination: { enabled: true, limit: 10 },
+      sort: true,
+      resizable: true,
+      className: { table: 'table table-dark table-striped mb-0' }
+    });
+
+    linesGrid.render(linesGridDiv);
+    linesGridDiv.dataset.gridjsInit = '1';
+    
+    // Salva la griglia per future operazioni
+    window.detailManager.orderLinesGrid = linesGrid;
+
+  } catch (error) {
+    console.error('Errore nel caricamento dei dettagli ordine:', error);
+  }
+}

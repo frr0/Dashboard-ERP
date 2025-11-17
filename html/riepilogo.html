@@ -1,80 +1,36 @@
 <h2 class="mb-3">Riepilogo</h2>
-
-<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-3">
-	<div class="col">
-		<div class="card border-0 shadow-sm h-100 bg-dark text-light">
-			<div class="card-body">
-				<div class="text-muted">Ordini (Novembre)</div>
-				<div class="d-flex justify-content-between align-items-center mt-1">
-					<div class="fs-4 fw-semibold" id="card-orders-month">0</div>
-					<div class="text-success small d-flex align-items-center">
-						<!-- <span class="me-1" aria-hidden="true">▲</span> -->
-						<!-- <span>+4.2%</span> -->
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col">
-		<div class="card border-0 shadow-sm h-100 bg-dark text-light">
-			<div class="card-body">
-				<div class="text-muted">Ordini Totali</div>
-				<div class="d-flex justify-content-between align-items-center mt-1">
-					<div class="fs-4 fw-semibold" id="card-orders-total">0</div>
-					<div class="text-success small d-flex align-items-center">
-						<!-- <span class="me-1" aria-hidden="true">▲</span> -->
-						<!-- <span>+2.1%</span> -->
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col">
-		<div class="card border-0 shadow-sm h-100 bg-dark text-light">
-			<div class="card-body">
-				<div class="text-muted">Grafico a torta</div>
-				<div class="d-flex justify-content-between align-items-center mt-1">
-					<div class="fs-4 fw-semibold" id="card-pie-metric">0</div>
-					<div class="text-success small d-flex align-items-center">
-						<!-- <span class="me-1" aria-hidden="true">▲</span> -->
-						<!-- <span>+1.5%</span> -->
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col">
-		<div class="card border-0 shadow-sm h-100 bg-dark text-light">
-			<div class="card-body">
-				<div class="text-muted">Elenco con ultimi 10 ordini</div>
-				<div class="d-flex justify-content-between align-items-center mt-1">
-					<div class="fs-4 fw-semibold" id="card-last10-count">0</div>
-					<div class="text-danger small d-flex align-items-center">
-						<!-- <span class="me-1" aria-hidden="true">▼</span> -->
-						<!-- <span>-0.8%</span> -->
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="col">
-		<div class="card border-0 shadow-sm h-100 bg-dark text-light">
-			<div class="card-body">
-				<div class="text-muted">Prodotti con disponibilità in magazzino inferiore a 10 unità</div>
-				<div class="d-flex justify-content-between align-items-center mt-1">
-					<div class="fs-4 fw-semibold" id="card-lowstock-count">0</div>
-					<div class="text-danger small d-flex align-items-center">
-						<!-- <span class="me-1" aria-hidden="true">▼</span> -->
-						<!-- <span>-3.2%</span> -->
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="row g-3 mb-3">
+  <div class="col-12 col-lg-4">
+    <div class="card border-0 shadow-sm h-100 bg-dark text-light">
+      <div class="card-body">
+        <div class="text-muted">Ordini (Novembre)</div>
+        <div class="fs-2 fw-bold mt-2" id="card-orders-month">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-4">
+    <div class="card border-0 shadow-sm h-100 bg-dark text-light">
+      <div class="card-body">
+        <div class="text-muted">Ordini Totali</div>
+        <div class="fs-2 fw-bold mt-2" id="card-orders-total">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-4">
+    <div class="card border-0 shadow-sm h-100 bg-dark text-light h-100">
+      <div class="card-body">
+        <div class="text-muted mb-2">Distribuzione ordini per Paese</div>
+        <div class="d-flex align-items-center">
+          <div style="width: 120px; min-width: 120px;">
+            <canvas id="pie-orders-country" width="120" height="120"></canvas>
+          </div>
+          <div class="ms-3 flex-grow-1">
+            <ul class="list-unstyled mb-0" id="pie-legend"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="row g-3 mt-1">
@@ -107,15 +63,3 @@
 	</div>
 </div>
 
-<div class="row g-3 mt-1">
-	<div class="col-12">
-		<div class="card border-0 shadow-sm bg-dark text-light">
-			<div class="card-header border-0 bg-dark text-light">Distribuzione ordini per Paese</div>
-			<div class="card-body">
-				<div class="ratio ratio-21x9">
-					<canvas id="pie-orders-country"></canvas>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>

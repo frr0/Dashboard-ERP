@@ -285,15 +285,23 @@ async function renderRiepilogo() {
       options: {
         plugins: {
           legend: {
-            position: 'bottom',
-            labels: {
-              color: '#ddd'
-            }
+            display: false // Disabilita la legenda interna di Chart.js
           }
         }
       }
     });
   });
+  
+  // --- GESTIONE LEGENDA GRAFICO ---
+  var legendContainer = document.getElementById('pie-legend');
+  if (legendContainer) {
+    var legendHtml = '';
+    var legendColors = ['#6ea8fe', '#f7b267', '#5cc689', '#c77dff', '#ff6b6b', '#adb5bd'];
+    for (var i = 0; i < pieLabels.length; i++) {
+      legendHtml += '<li class="d-flex align-items-center mb-1"><span style="display:inline-block;width:16px;height:16px;background:' + legendColors[i % legendColors.length] + ';border-radius:3px;margin-right:8px;"></span>' + pieLabels[i] + ' <span class="ms-2 text-muted">(' + pieData[i] + ')</span></li>';
+    }
+    legendContainer.innerHTML = legendHtml;
+  }
 }
 
 // Ascolta quando la pagina riepilogo viene caricata
