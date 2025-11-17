@@ -57,22 +57,17 @@ function setupRowClick(entityName, fieldMapping) {
       var allRows = table.querySelectorAll('tr');
       for (var i = 0; i < allRows.length; i++) {
         allRows[i].classList.remove('selected-row');
-        // Rimuovi anche gli stili inline dalle celle
-        var cells = allRows[i].querySelectorAll('td');
+        // Rimuovi anche gli stili inline dalle celle (sia td normali che gridjs-td)
+        var cells = allRows[i].querySelectorAll('td, [class*="gridjs-td"]');
         for (var j = 0; j < cells.length; j++) {
           cells[j].style.backgroundColor = '';
+          cells[j].style.background = '';
+          cells[j].style.color = '';
         }
       }
       
       // Aggiungi la classe alla riga cliccata
       row.classList.add('selected-row');
-      
-      // Forza il background azzurro su tutte le celle della riga selezionata
-      var selectedCells = row.querySelectorAll('td');
-      for (var k = 0; k < selectedCells.length; k++) {
-        selectedCells[k].style.backgroundColor = '#2196f3';
-        selectedCells[k].style.color = '#fff';
-      }
 
       // Leggi i dati dalla riga
       var cells = row.querySelectorAll('td');
@@ -126,12 +121,6 @@ function setupRowClick(entityName, fieldMapping) {
         var cell = rows[i].querySelector('td');
         if (cell && String(cell.textContent.trim()) === String(selectedData[idField])) {
           rows[i].classList.add('selected-row');
-          // Forza il background azzurro su tutte le celle
-          var cells = rows[i].querySelectorAll('td');
-          for (var j = 0; j < cells.length; j++) {
-            cells[j].style.backgroundColor = '#2196f3';
-            cells[j].style.color = '#fff';
-          }
         }
       }
     }
@@ -432,33 +421,6 @@ function exportData(entityName, data, fieldMapping) {
   link.click();
   document.body.removeChild(link);
 }
-
-// Aggiungi lo stile CSS per le righe selezionate
-var style = document.createElement('style');
-style.textContent = '\n' +
-  '  .gridjs-tbody tr.selected-row td.gridjs-td,\n' +
-  '  .gridjs-tbody tr.selected-row:nth-child(odd) td.gridjs-td,\n' +
-  '  .gridjs-tbody tr.selected-row:nth-child(even) td.gridjs-td,\n' +
-  '  .gridjs-tbody tr.selected-row td[class*="gridjs-td"],\n' +
-  '  tbody tr.selected-row td {\n' +
-  '    background-color: #2196f3 !important;\n' +
-  '    background: #2196f3 !important;\n' +
-  '    color: #fff !important;\n' +
-  '    border-color: #1976d2 !important;\n' +
-  '  }\n' +
-  '  .gridjs-tbody tr.selected-row,\n' +
-  '  .gridjs-tbody tr.selected-row:nth-child(odd),\n' +
-  '  .gridjs-tbody tr.selected-row:nth-child(even) {\n' +
-  '    background-color: #2196f3 !important;\n' +
-  '    background: #2196f3 !important;\n' +
-  '  }\n' +
-  '  .gridjs-tbody tr.selected-row:hover td.gridjs-td,\n' +
-  '  .gridjs-tbody tr.selected-row:hover td {\n' +
-  '    background-color: #1e88e5 !important;\n' +
-  '    background: #1e88e5 !important;\n' +
-  '    color: #fff !important;\n' +
-  '  }\n';
-document.head.appendChild(style);
 
 // Funzione per caricare i dettagli dei prodotti di un ordine
 async function loadOrderDetails(orderId) {

@@ -183,17 +183,31 @@ main {
 .tabulator .tabulator-cell { border-right: 1px solid var(--app-border); }
 .tabulator .tabulator-footer { background: var(--app-surface); border-top: 1px solid var(--app-border); }
 
-/* Grid.js dark striped styling */
-.gridjs-table { background: var(--app-surface); border:1px solid var(--app-border); border-radius:.5rem; }
-.gridjs-thead .gridjs-th { background: var(--app-surface); color: var(--app-text); border-color: var(--app-border); }
-.gridjs-tbody .gridjs-tr { background-color:#353a3f; }
-.gridjs-tbody .gridjs-tr:nth-child(odd) { background-color:#2f3438; }
-.gridjs-tbody .gridjs-td { background-color:inherit; }
-.gridjs-tbody .gridjs-td:not([class*="gridjs-"]) { background-color:inherit; }
-.gridjs-tbody .gridjs-td:empty { background-color:#23272b !important; }
-.gridjs-tbody .gridjs-tr:hover { filter:brightness(1.08); }
-.gridjs-tbody .gridjs-td { border-color: var(--app-border); color: var(--app-text); }
-.gridjs-footer { background: var(--app-surface); border-top:1px solid var(--app-border); }
+/* Grid.js dark styling */
+.gridjs-table { background: var(--app-surface); border: 1px solid #181a1b; border-radius: .5rem; }
+.gridjs-thead .gridjs-th { background: var(--app-surface); color: var(--app-text); border-color: #181a1b; }
+
+/* Bordi scuri per celle Grid.js */
+.gridjs-tbody .gridjs-td { border-color: #181a1b !important; }
+
+/* Tutte le righe Grid.js stesso colore scuro */
+.gridjs-tbody .gridjs-tr:not(.selected-row) .gridjs-td {
+  background-color: #23272b;
+  color: var(--app-text);
+}
+
+/* Hover: NON applicare se la riga è selezionata */
+.gridjs-tbody .gridjs-tr:not(.selected-row):hover .gridjs-td {
+  filter: brightness(1.2);
+}
+
+/* Stile per righe selezionate - azzurro */
+.gridjs-tbody .gridjs-tr.selected-row .gridjs-td {
+  background-color: #2196f3 !important;
+  color: #fff !important;
+}
+
+.gridjs-footer { background: var(--app-surface); border-top: 1px solid var(--app-border); }
 .gridjs-pagination .gridjs-pages button {
   color: #fff !important;
   background: #353a3f !important;

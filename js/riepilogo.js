@@ -1,11 +1,5 @@
-// riepilogo.js - Rende il riepilogo con grafici e tabelle
-
 // Carica Chart.js se non è già disponibile
 function loadChartJs(callback) {
-  if (window.Chart) {
-    callback();
-    return;
-  }
   
   var script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
