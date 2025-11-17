@@ -97,9 +97,15 @@ footer {
 
 .border, .table, .offcanvas, .card, .modal-content { border-color: var(--app-border) !important; }
 
-.table thead th { background: var(--app-surface); }
-.table tbody tr { background: var(--app-surface); }
-.table tbody tr:hover { filter: brightness(1.05); }
+.table thead th { background: #292936; }
+.table tbody tr { background: #292936 !important; }
+.table tbody tr:hover { filter: brightness(1.2); }
+
+/* Sovrascrivo table-striped per rendere tutte le righe dello stesso colore */
+.table-striped tbody tr:nth-of-type(odd),
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: #292936 !important;
+}
 
 main {
     flex: 1;
@@ -176,10 +182,10 @@ main {
 }
 
 /* Tabulator theme tweaks to match dark */
-.tabulator { background: var(--app-surface); color: var(--app-text); border: 1px solid var(--app-border); border-radius: .5rem; }
-.tabulator .tabulator-header { background: var(--app-surface); border-bottom: 1px solid var(--app-border); }
-.tabulator .tabulator-row { background: var(--app-surface); border-bottom: 1px solid var(--app-border); }
-.tabulator .tabulator-row:hover { filter: brightness(1.05); }
+.tabulator { background: #292936; color: var(--app-text); border: 1px solid var(--app-border); border-radius: .5rem; }
+.tabulator .tabulator-header { background: #292936; border-bottom: 1px solid var(--app-border); }
+.tabulator .tabulator-row { background: #292936; border-bottom: 1px solid var(--app-border); }
+.tabulator .tabulator-row:hover { filter: brightness(1.2); }
 .tabulator .tabulator-cell { border-right: 1px solid var(--app-border); }
 .tabulator .tabulator-footer { background: var(--app-surface); border-top: 1px solid var(--app-border); }
 
@@ -190,9 +196,11 @@ main {
 /* Bordi scuri per celle Grid.js */
 .gridjs-tbody .gridjs-td { border-color: #0c0e09 !important; }
 
-/* Tutte le righe Grid.js stesso colore scuro */
-.gridjs-tbody .gridjs-tr:not(.selected-row) .gridjs-td {
-  background-color: #1d2231;
+/* Tutte le righe Grid.js stesso colore verde - sovrascrivo anche nth-child */
+.gridjs-tbody .gridjs-tr:not(.selected-row) .gridjs-td,
+.gridjs-tbody .gridjs-tr:nth-child(odd):not(.selected-row) .gridjs-td,
+.gridjs-tbody .gridjs-tr:nth-child(even):not(.selected-row) .gridjs-td {
+  background-color: #292936 !important;
   color: var(--app-text);
 }
 
@@ -236,4 +244,8 @@ main {
   background-color: #2f3438;
   color: #ffffff;
   border-color: #beb6b6;
+}
+
+.gridjs-tr:nth-child(even) {
+  background-color: inherit;
 }
