@@ -1,18 +1,117 @@
 <h2 class="mb-4">Gestione Spedizionieri e Fornitori</h2>
 
-<div class="row g-3 mb-2">
-  <div class="col-12 col-md-6">
-    <div class="d-flex justify-content-between mb-2">
-      <input id="spedizionieri-search" type="text" class="form-control ricerca" placeholder="Ricerca spedizionieri...">
-      <button class="btn btn-success ms-2">Nuovo</button>
+<div class="orders-page">
+  <!-- Sezione Spedizionieri -->
+  <div class="orders-master">
+    <h5 class="mb-2">Spedizionieri</h5>
+    <div class="orders-toolbar row g-2 align-items-center mb-2">
+      <div class="col-12 col-md">
+        <input id="spedizionieri-search" type="text" class="form-control" placeholder="Cerca spedizionieri...">
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button id="spedizionieri-new" class="btn btn-success">Nuovo</button>
+        <button id="spedizionieri-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="spedizionieri-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="spedizionieri-export" class="btn btn-outline-primary">Export Excel</button>
+      </div>
     </div>
     <div id="spedizionieri-grid" class="gridjs-host"></div>
   </div>
-  <div class="col-12 col-md-6">
-    <div class="d-flex justify-content-between mb-2">
-      <input id="fornitori-search" type="text" class="form-control ricerca" placeholder="Ricerca fornitori...">
-      <button class="btn btn-success ms-2">Nuovo</button>
+
+  <div class="orders-detail" id="spedizionieri-detail">
+    <h6 class="mb-3">Dettaglio spedizioniere</h6>
+    <form id="spedizionieri-form" class="row g-3">
+      <div class="col-6 col-md-2">
+        <label for="sped-id" class="form-label">ID</label>
+        <input id="sped-id" name="shipper_id" class="form-control" type="number" readonly title="ID Spedizioniere" placeholder="ID">
+      </div>
+      <div class="col-12 col-md-5">
+        <label for="sped-company-name" class="form-label">Nome Azienda</label>
+        <input id="sped-company-name" name="company_name" class="form-control" type="text" title="Nome azienda" placeholder="Nome azienda">
+      </div>
+      <div class="col-12 col-md-5">
+        <label for="sped-phone" class="form-label">Telefono</label>
+        <input id="sped-phone" name="phone" class="form-control" type="text" title="Telefono" placeholder="Telefono">
+      </div>
+      <div class="col-12">
+        <button id="spedizionieri-save" type="button" class="btn btn-primary">Salva</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="orders-page mt-4">
+  <!-- Sezione Fornitori -->
+  <div class="orders-master">
+    <h5 class="mb-2">Fornitori</h5>
+    <div class="orders-toolbar row g-2 align-items-center mb-2">
+      <div class="col-12 col-md">
+        <input id="fornitori-search" type="text" class="form-control" placeholder="Cerca fornitori...">
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button id="fornitori-new" class="btn btn-success">Nuovo</button>
+        <button id="fornitori-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="fornitori-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="fornitori-export" class="btn btn-outline-primary">Export Excel</button>
+      </div>
     </div>
     <div id="fornitori-grid" class="gridjs-host"></div>
+  </div>
+
+  <div class="orders-detail" id="fornitori-detail">
+    <h6 class="mb-3">Dettaglio fornitore</h6>
+    <form id="fornitori-form" class="row g-3">
+      <div class="col-6 col-md-2">
+        <label for="forn-id" class="form-label">ID</label>
+        <input id="forn-id" name="supplier_id" class="form-control" type="number" readonly title="ID Fornitore" placeholder="ID">
+      </div>
+      <div class="col-12 col-md-5">
+        <label for="forn-company-name" class="form-label">Nome Azienda</label>
+        <input id="forn-company-name" name="company_name" class="form-control" type="text" title="Nome azienda" placeholder="Nome azienda">
+      </div>
+      <div class="col-12 col-md-5">
+        <label for="forn-contact-name" class="form-label">Nome Contatto</label>
+        <input id="forn-contact-name" name="contact_name" class="form-control" type="text" title="Nome contatto" placeholder="Nome contatto">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="forn-contact-title" class="form-label">Titolo Contatto</label>
+        <input id="forn-contact-title" name="contact_title" class="form-control" type="text" title="Titolo contatto" placeholder="Titolo contatto">
+      </div>
+      <div class="col-12 col-md-8">
+        <label for="forn-address" class="form-label">Indirizzo</label>
+        <input id="forn-address" name="address" class="form-control" type="text" title="Indirizzo" placeholder="Indirizzo">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="forn-city" class="form-label">Città</label>
+        <input id="forn-city" name="city" class="form-control" type="text" title="Città" placeholder="Città">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="forn-region" class="form-label">Regione</label>
+        <input id="forn-region" name="region" class="form-control" type="text" title="Regione" placeholder="Regione">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="forn-postal-code" class="form-label">CAP</label>
+        <input id="forn-postal-code" name="postal_code" class="form-control" type="text" title="CAP" placeholder="CAP">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="forn-country" class="form-label">Paese</label>
+        <input id="forn-country" name="country" class="form-control" type="text" title="Paese" placeholder="Paese">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="forn-phone" class="form-label">Telefono</label>
+        <input id="forn-phone" name="phone" class="form-control" type="text" title="Telefono" placeholder="Telefono">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="forn-fax" class="form-label">Fax</label>
+        <input id="forn-fax" name="fax" class="form-control" type="text" title="Fax" placeholder="Fax">
+      </div>
+      <div class="col-12 col-md-6">
+        <label for="forn-homepage" class="form-label">Homepage</label>
+        <input id="forn-homepage" name="homepage" class="form-control" type="text" title="Homepage" placeholder="Homepage">
+      </div>
+      <div class="col-12">
+        <button id="fornitori-save" type="button" class="btn btn-primary">Salva</button>
+      </div>
+    </form>
   </div>
 </div>

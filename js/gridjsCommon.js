@@ -1,7 +1,3 @@
-// gridjsCommon.js - inizializzazione generica Grid.js per pagine dinamiche
-
-// gridjsCommon.js - versione junior developer
-
 // Questa funzione controlla se Grid.js è già caricato, altrimenti lo carica dalla CDN
 function ensureGridJs(callback) {
   if (typeof gridjs !== 'undefined') {
@@ -113,6 +109,25 @@ async function initClienti() {
   clientiGrid.render(clientiDiv);
   clientiDiv.dataset.gridjsInit = '1';
   makeSearcher('clienti-search', clientiData, clientiGrid, clientiRowMapper);
+  
+  // Inizializza il detail manager
+  if (typeof initDetailManager === 'function') {
+    var fieldMapping = {
+      customer_id: 'cli-id',
+      customer_code: 'cli-code',
+      company_name: 'cli-azienda',
+      contact_name: 'cli-contatto',
+      contact_title: 'cli-titolo',
+      address: 'cli-indirizzo',
+      city: 'cli-citta',
+      region: 'cli-regione',
+      postal_code: 'cli-cap',
+      country: 'cli-paese',
+      phone: 'cli-telefono',
+      fax: 'cli-fax'
+    };
+    initDetailManager('clienti', clientiData, clientiGrid, fieldMapping);
+  }
 }
 
 // Inizializza la tabella prodotti
@@ -157,6 +172,23 @@ async function initProdotti() {
   prodottiGrid.render(prodottiDiv);
   prodottiDiv.dataset.gridjsInit = '1';
   makeSearcher('prodotti-search', prodottiData, prodottiGrid, prodottiRowMapper);
+  
+  // Inizializza il detail manager
+  if (typeof initDetailManager === 'function') {
+    var fieldMapping = {
+      product_id: 'prod-id',
+      product_name: 'prod-name',
+      supplier_id: 'prod-supplier-id',
+      category_id: 'prod-category-id',
+      quantity_per_unit: 'prod-quantity-per-unit',
+      unit_price: 'prod-unit-price',
+      units_in_stock: 'prod-units-in-stock',
+      units_on_order: 'prod-units-on-order',
+      reorder_level: 'prod-reorder-level',
+      discontinued: 'prod-discontinued'
+    };
+    initDetailManager('prodotti', prodottiData, prodottiGrid, fieldMapping);
+  }
 }
 
 // Inizializza la tabella categorie
@@ -183,6 +215,16 @@ async function initCategorie() {
   categorieGrid.render(categorieDiv);
   categorieDiv.dataset.gridjsInit = '1';
   makeSearcher('categorie-search', categorieData, categorieGrid, categorieRowMapper);
+  
+  // Inizializza il detail manager
+  if (typeof initDetailManager === 'function') {
+    var fieldMapping = {
+      category_id: 'cat-id',
+      category_name: 'cat-name',
+      description: 'cat-description'
+    };
+    initDetailManager('categorie', categorieData, categorieGrid, fieldMapping);
+  }
 }
 
 // Inizializza la tabella dipendenti
@@ -233,6 +275,29 @@ async function initDipendenti() {
   dipendentiGrid.render(dipendentiDiv);
   dipendentiDiv.dataset.gridjsInit = '1';
   makeSearcher('dipendenti-search', dipendentiData, dipendentiGrid, dipendentiRowMapper);
+  
+  // Inizializza il detail manager
+  if (typeof initDetailManager === 'function') {
+    var fieldMapping = {
+      employee_id: 'dip-id',
+      last_name: 'dip-last-name',
+      first_name: 'dip-first-name',
+      title: 'dip-title',
+      title_of_courtesy: 'dip-title-of-courtesy',
+      birth_date: 'dip-birth-date',
+      hire_date: 'dip-hire-date',
+      address: 'dip-address',
+      city: 'dip-city',
+      region: 'dip-region',
+      postal_code: 'dip-postal-code',
+      country: 'dip-country',
+      home_phone: 'dip-home-phone',
+      extension: 'dip-extension',
+      reports_to: 'dip-reports-to',
+      notes: 'dip-notes'
+    };
+    initDetailManager('dipendenti', dipendentiData, dipendentiGrid, fieldMapping);
+  }
 }
 
 // Inizializza la tabella spedizionieri
@@ -259,6 +324,16 @@ async function initSpedizionieri() {
   spedizionieriGrid.render(spedizionieriDiv);
   spedizionieriDiv.dataset.gridjsInit = '1';
   makeSearcher('spedizionieri-search', spedizionieriData, spedizionieriGrid, spedizionieriRowMapper);
+  
+  // Inizializza il detail manager
+  if (typeof initDetailManager === 'function') {
+    var fieldMapping = {
+      shipper_id: 'sped-id',
+      company_name: 'sped-company-name',
+      phone: 'sped-phone'
+    };
+    initDetailManager('spedizionieri', spedizionieriData, spedizionieriGrid, fieldMapping);
+  }
 }
 
 // Inizializza la tabella fornitori
@@ -303,6 +378,25 @@ async function initFornitori() {
   fornitoriGrid.render(fornitoriDiv);
   fornitoriDiv.dataset.gridjsInit = '1';
   makeSearcher('fornitori-search', fornitoriData, fornitoriGrid, fornitoriRowMapper);
+  
+  // Inizializza il detail manager
+  if (typeof initDetailManager === 'function') {
+    var fieldMapping = {
+      supplier_id: 'forn-id',
+      company_name: 'forn-company-name',
+      contact_name: 'forn-contact-name',
+      contact_title: 'forn-contact-title',
+      address: 'forn-address',
+      city: 'forn-city',
+      region: 'forn-region',
+      postal_code: 'forn-postal-code',
+      country: 'forn-country',
+      phone: 'forn-phone',
+      fax: 'forn-fax',
+      homepage: 'forn-homepage'
+    };
+    initDetailManager('fornitori', fornitoriData, fornitoriGrid, fieldMapping);
+  }
 }
 
 // Inizializza la tabella ordini
@@ -367,6 +461,26 @@ async function initOrdini() {
       });
       ordiniGrid.updateConfig({ data: filtered.map(ordiniRowMapper) }).forceRender();
     });
+  }
+  
+  // Inizializza il detail manager per ordini
+  if (typeof initDetailManager === 'function') {
+    var fieldMapping = {
+      order_id: 'of-order-id',
+      customer_id: 'of-customer-id',
+      employee_id: 'of-employee-id',
+      order_date: 'of-order-date',
+      required_date: 'of-required-date',
+      shipped_date: 'of-shipped-date',
+      ship_name: 'of-ship-name',
+      ship_address: 'of-ship-address',
+      ship_city: 'of-ship-city',
+      ship_region: 'of-ship-region',
+      ship_postal_code: 'of-ship-postal',
+      ship_country: 'of-ship-country',
+      freight: 'of-freight'
+    };
+    initDetailManager('orders', ordiniData, ordiniGrid, fieldMapping);
   }
 }
 

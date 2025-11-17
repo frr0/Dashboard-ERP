@@ -1,6 +1,90 @@
 <h2 class="mb-4">Gestione Dipendenti</h2>
-<div class="d-flex justify-content-between mb-3">
-  <input id="dipendenti-search" type="text" class="form-control ricerca" placeholder="Ricerca dipendenti...">
-  <button class="btn btn-success ms-2">Nuovo</button>
+<div class="orders-page">
+  <div class="orders-master">
+    <div class="orders-toolbar row g-2 align-items-center mb-2">
+      <div class="col-12 col-md">
+        <input id="dipendenti-search" type="text" class="form-control" placeholder="Cerca dipendenti...">
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button id="dipendenti-new" class="btn btn-success">Nuovo</button>
+        <button id="dipendenti-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="dipendenti-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="dipendenti-export" class="btn btn-outline-primary">Export Excel</button>
+      </div>
+    </div>
+    <div id="dipendenti-grid" class="gridjs-host"></div>
+  </div>
+
+  <div class="orders-detail" id="dipendenti-detail">
+    <h6 class="mb-3">Dettaglio dipendente</h6>
+    <form id="dipendenti-form" class="row g-3">
+      <div class="col-6 col-md-2">
+        <label for="dip-id" class="form-label">ID</label>
+        <input id="dip-id" name="employee_id" class="form-control" type="number" readonly title="ID Dipendente" placeholder="ID">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="dip-last-name" class="form-label">Cognome</label>
+        <input id="dip-last-name" name="last_name" class="form-control" type="text" title="Cognome" placeholder="Cognome">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="dip-first-name" class="form-label">Nome</label>
+        <input id="dip-first-name" name="first_name" class="form-control" type="text" title="Nome" placeholder="Nome">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="dip-title" class="form-label">Titolo</label>
+        <input id="dip-title" name="title" class="form-control" type="text" title="Titolo" placeholder="es. Sales Representative">
+      </div>
+      <div class="col-12 col-md-4">
+        <label for="dip-title-of-courtesy" class="form-label">Titolo di cortesia</label>
+        <input id="dip-title-of-courtesy" name="title_of_courtesy" class="form-control" type="text" title="Titolo di cortesia" placeholder="es. Mr., Ms., Dr.">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-birth-date" class="form-label">Data di nascita</label>
+        <input id="dip-birth-date" name="birth_date" class="form-control" type="date" title="Data di nascita">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-hire-date" class="form-label">Data assunzione</label>
+        <input id="dip-hire-date" name="hire_date" class="form-control" type="date" title="Data assunzione">
+      </div>
+      <div class="col-12 col-md-8">
+        <label for="dip-address" class="form-label">Indirizzo</label>
+        <input id="dip-address" name="address" class="form-control" type="text" title="Indirizzo" placeholder="Indirizzo">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-city" class="form-label">Città</label>
+        <input id="dip-city" name="city" class="form-control" type="text" title="Città" placeholder="Città">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-region" class="form-label">Regione</label>
+        <input id="dip-region" name="region" class="form-control" type="text" title="Regione" placeholder="Regione">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-postal-code" class="form-label">CAP</label>
+        <input id="dip-postal-code" name="postal_code" class="form-control" type="text" title="CAP" placeholder="CAP">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-country" class="form-label">Paese</label>
+        <input id="dip-country" name="country" class="form-control" type="text" title="Paese" placeholder="Paese">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-home-phone" class="form-label">Telefono</label>
+        <input id="dip-home-phone" name="home_phone" class="form-control" type="text" title="Telefono" placeholder="Telefono">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="dip-extension" class="form-label">Estensione</label>
+        <input id="dip-extension" name="extension" class="form-control" type="text" title="Estensione" placeholder="Estensione">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="dip-reports-to" class="form-label">Riporta a (ID)</label>
+        <input id="dip-reports-to" name="reports_to" class="form-control" type="number" title="ID manager" placeholder="ID manager">
+      </div>
+      <div class="col-12">
+        <label for="dip-notes" class="form-label">Note</label>
+        <textarea id="dip-notes" name="notes" class="form-control" rows="3" title="Note" placeholder="Note sul dipendente"></textarea>
+      </div>
+      <div class="col-12">
+        <button id="dipendenti-save" type="button" class="btn btn-primary">Salva</button>
+      </div>
+    </form>
+  </div>
 </div>
-<div id="dipendenti-grid" class="gridjs-host"></div>

@@ -1,6 +1,38 @@
 <h2 class="mb-4">Gestione Categorie</h2>
-<div class="d-flex justify-content-between mb-3">
-  <input id="categorie-search" type="text" class="form-control ricerca" placeholder="Ricerca categorie...">
-  <button class="btn btn-success ms-2">Nuovo</button>
+<div class="orders-page">
+  <div class="orders-master">
+    <div class="orders-toolbar row g-2 align-items-center mb-2">
+      <div class="col-12 col-md">
+        <input id="categorie-search" type="text" class="form-control" placeholder="Cerca categorie...">
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button id="categorie-new" class="btn btn-success">Nuovo</button>
+        <button id="categorie-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="categorie-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="categorie-export" class="btn btn-outline-primary">Export Excel</button>
+      </div>
+    </div>
+    <div id="categorie-grid" class="gridjs-host"></div>
+  </div>
+
+  <div class="orders-detail" id="categorie-detail">
+    <h6 class="mb-3">Dettaglio categoria</h6>
+    <form id="categorie-form" class="row g-3">
+      <div class="col-6 col-md-2">
+        <label for="cat-id" class="form-label">ID</label>
+        <input id="cat-id" name="category_id" class="form-control" type="number" readonly title="ID Categoria" placeholder="ID">
+      </div>
+      <div class="col-12 col-md-5">
+        <label for="cat-name" class="form-label">Nome Categoria</label>
+        <input id="cat-name" name="category_name" class="form-control" type="text" title="Nome categoria" placeholder="Nome categoria">
+      </div>
+      <div class="col-12 col-md-5">
+        <label for="cat-description" class="form-label">Descrizione</label>
+        <textarea id="cat-description" name="description" class="form-control" rows="3" title="Descrizione" placeholder="Descrizione categoria"></textarea>
+      </div>
+      <div class="col-12">
+        <button id="categorie-save" type="button" class="btn btn-primary">Salva</button>
+      </div>
+    </form>
+  </div>
 </div>
-<div id="categorie-grid" class="gridjs-host"></div>

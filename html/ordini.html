@@ -8,10 +8,10 @@
         <input id="order-search" type="text" class="form-control" placeholder="Cerca per ID, cliente, destinatario, città...">
       </div>
       <div class="col-12 col-md-auto d-flex gap-2">
-        <button id="btn-new-order" class="btn btn-success">Nuovo</button>
-        <button id="btn-refresh" class="btn btn-outline-secondary">Aggiorna</button>
-        <button id="btn-delete" class="btn btn-outline-danger">Elimina</button>
-        <button id="btn-export" class="btn btn-outline-primary">Export Excel</button>
+        <button id="orders-new" class="btn btn-success">Nuovo</button>
+        <button id="orders-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="orders-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="orders-export" class="btn btn-outline-primary">Export Excel</button>
         <button id="btn-email" class="btn btn-outline-warning">Invia PDF via email</button>
       </div>
     </div>
@@ -20,7 +20,7 @@
     <div id="orders-grid"></div>
   </div>
 
-  <div class="orders-detail">
+  <div class="orders-detail" id="orders-detail">
     <ul class="nav nav-tabs" id="orderTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="tab-order-tab" data-bs-toggle="tab" data-bs-target="#tab-order" type="button" role="tab">Dettaglio ordine</button>
@@ -90,7 +90,7 @@
           </div>
 
           <div class="col-12">
-            <button id="btn-save-order" type="button" class="btn btn-primary">Salva</button>
+            <button id="orders-save" type="button" class="btn btn-primary">Salva</button>
             <span class="small-muted ms-2" id="order-status"></span>
           </div>
         </form>

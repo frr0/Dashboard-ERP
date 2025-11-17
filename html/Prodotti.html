@@ -1,6 +1,69 @@
 <h2 class="mb-4">Gestione Prodotti</h2>
-<div class="d-flex justify-content-between mb-3">
-  <input id="prodotti-search" type="text" class="form-control ricerca" placeholder="Ricerca prodotti...">
-  <button class="btn btn-success ms-2">Nuovo</button>
+<div class="orders-page">
+  <div class="orders-master">
+    <div class="orders-toolbar row g-2 align-items-center mb-2">
+      <div class="col-12 col-md">
+        <input id="prodotti-search" type="text" class="form-control" placeholder="Cerca prodotti...">
+      </div>
+      <div class="col-12 col-md-auto d-flex gap-2">
+        <button id="prodotti-new" class="btn btn-success">Nuovo</button>
+        <button id="prodotti-refresh" class="btn btn-outline-secondary">Aggiorna</button>
+        <button id="prodotti-delete" class="btn btn-outline-danger">Elimina</button>
+        <button id="prodotti-export" class="btn btn-outline-primary">Export Excel</button>
+      </div>
+    </div>
+    <div id="prodotti-grid" class="gridjs-host"></div>
+  </div>
+
+  <div class="orders-detail" id="prodotti-detail">
+    <h6 class="mb-3">Dettaglio prodotto</h6>
+    <form id="prodotti-form" class="row g-3">
+      <div class="col-6 col-md-2">
+        <label for="prod-id" class="form-label">ID</label>
+        <input id="prod-id" name="product_id" class="form-control" type="number" readonly title="ID Prodotto" placeholder="ID">
+      </div>
+      <div class="col-12 col-md-6">
+        <label for="prod-name" class="form-label">Nome Prodotto</label>
+        <input id="prod-name" name="product_name" class="form-control" type="text" title="Nome prodotto" placeholder="Nome prodotto">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="prod-supplier-id" class="form-label">ID Fornitore</label>
+        <input id="prod-supplier-id" name="supplier_id" class="form-control" type="number" title="ID Fornitore" placeholder="ID Fornitore">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="prod-category-id" class="form-label">ID Categoria</label>
+        <input id="prod-category-id" name="category_id" class="form-control" type="number" title="ID Categoria" placeholder="ID Categoria">
+      </div>
+      <div class="col-6 col-md-3">
+        <label for="prod-quantity-per-unit" class="form-label">Quantità per unità</label>
+        <input id="prod-quantity-per-unit" name="quantity_per_unit" class="form-control" type="text" title="Quantità per unità" placeholder="es. 10 boxes x 20 bags">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="prod-unit-price" class="form-label">Prezzo (€)</label>
+        <input id="prod-unit-price" name="unit_price" class="form-control" type="number" step="0.01" title="Prezzo unitario" placeholder="0.00">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="prod-units-in-stock" class="form-label">In magazzino</label>
+        <input id="prod-units-in-stock" name="units_in_stock" class="form-control" type="number" title="Unità in magazzino" placeholder="0">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="prod-units-on-order" class="form-label">In ordine</label>
+        <input id="prod-units-on-order" name="units_on_order" class="form-control" type="number" title="Unità in ordine" placeholder="0">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="prod-reorder-level" class="form-label">Livello riordino</label>
+        <input id="prod-reorder-level" name="reorder_level" class="form-control" type="number" title="Livello di riordino" placeholder="0">
+      </div>
+      <div class="col-6 col-md-2">
+        <label for="prod-discontinued" class="form-label">Discontinuato</label>
+        <select id="prod-discontinued" name="discontinued" class="form-select" title="Prodotto discontinuato">
+          <option value="0">No</option>
+          <option value="1">Sì</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button id="prodotti-save" type="button" class="btn btn-primary">Salva</button>
+      </div>
+    </form>
+  </div>
 </div>
-<div id="prodotti-grid" class="gridjs-host"></div>
