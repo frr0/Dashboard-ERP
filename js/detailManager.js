@@ -1,240 +1,329 @@
-// detailManager.js - Gestione dettagli e operazioni CRUD per tutte le pagine
+// detailManager.js - Gestisce i dettagli delle tabelle
 
-// Stato globale per tracciare la riga selezionata
+// Variabili globali per tenere traccia dei dati
 window.detailManager = {
   selectedRows: {},
   originalData: {},
   grids: {}
 };
 
-/**
- * Inizializza la gestione dei dettagli per una pagina specifica
- * @param {string} entityName - Nome dell'entità (es. 'clienti', 'prodotti', etc.)
- * @param {Array} data - Array di dati
- * @param {Object} grid - Istanza Grid.js
- * @param {Object} fieldMapping - Mapping tra campi del form e campi dei dati
- */
+// Inizializza la gestione dei dettagli per una tabella
 function initDetailManager(entityName, data, grid, fieldMapping) {
+  // Salva i dati originali
   window.detailManager.originalData[entityName] = data;
   window.detailManager.grids[entityName] = grid;
   window.detailManager.selectedRows[entityName] = null;
 
   // Nascondi il form di dettaglio all'inizio
-  const detailDiv = document.getElementById(`${entityName}-detail`);
+  var detailDiv = document.getElementById(entityName + '-detail');
   if (detailDiv) {
     detailDiv.style.display = 'none';
   }
 
-  // Aggiungi listener per il click sulle righe della tabella
-  setupRowClickListener(entityName, fieldMapping);
+  // Configura il click sulle righe
+  setupRowClick(entityName, fieldMapping);
 
-  // Setup pulsanti
+  // Configura i pulsanti
   setupButtons(entityName, data, grid, fieldMapping);
 }
 
-/**
- * Configura il listener per il click sulle righe
- */
-function setupRowClickListener(entityName, fieldMapping) {
-  const gridDiv = document.getElementById(`${entityName}-grid`);
-  if (!gridDiv) return;
+// Configura il listener per il click sulle righe
+function setupRowClick(entityName, fieldMapping) {
+  var gridDiv = document.getElementById(entityName + '-grid');
+  if (!gridDiv) {
+    return;
+  }
 
-  // Usa event delegation per gestire i click sulle righe
-  setTimeout(() => {
-    const table = gridDiv.querySelector('table');
-    if (!table) return;
+  // Aspetta che la tabella sia renderizzata
+  setTimeout(function() {
+    var table = gridDiv.querySelector('table');
+    if (!table) {
+      return;
+    }
 
     // Rimuovi eventuali vecchi listener
     table.onclick = null;
 
-    table.addEventListener('click', (e) => {
-      const row = e.target.closest('tr');
-      if (!row || row.parentElement.tagName === 'THEAD') return;
+    // Aggiungi il listener per il click
+    table.addEventListener('click', function(event) {
+      var row = event.target.closest('tr');
+      
+      // Se non è una riga o è l'header, ignora
+      if (!row || row.parentElement.tagName === 'THEAD') {
+        return;
+      }
 
-      // Rimuovi selezione precedente
-      table.querySelectorAll('tr').forEach(r => r.classList.remove('selected-row'));
+      // Rimuovi la selezione da tutte le righe
+      var allRows = table.querySelectorAll('tr');
+      for (var i = 0; i < allRows.length; i++) {
+        allRows[i].classList.remove('selected-row');
+        // Rimuovi anche gli stili inline dalle celle
+        var cells = allRows[i].querySelectorAll('td');
+        for (var j = 0; j < cells.length; j++) {
+          cells[j].style.backgroundColor = '';
+        }
+      }
+      
+      // Aggiungi la classe alla riga cliccata
       row.classList.add('selected-row');
+      
+      // Forza il background azzurro su tutte le celle della riga selezionata
+      var selectedCells = row.querySelectorAll('td');
+      for (var k = 0; k < selectedCells.length; k++) {
+        selectedCells[k].style.backgroundColor = '#2196f3';
+        selectedCells[k].style.color = '#fff';
+      }
 
-      // Estrai i dati dalla riga
-      const cells = row.querySelectorAll('td');
-      const rowData = {};
+      // Leggi i dati dalla riga
+      var cells = row.querySelectorAll('td');
+      var rowData = {};
+      
       // Il primo campo è sempre l'ID
-      const idField = Object.keys(fieldMapping)[0];
-      rowData[idField] = cells[0]?.textContent.trim();
+      var fields = Object.keys(fieldMapping);
+      var idField = fields[0];
+      
+      if (cells[0]) {
+        rowData[idField] = cells[0].textContent.trim();
+      }
 
-      // Trova i dati completi dall'array originale
-      const fullData = window.detailManager.originalData[entityName].find(
-        item => String(item[idField]) === String(rowData[idField])
-      );
+      // Trova i dati completi nell'array originale
+      var fullData = null;
+      var dataArray = window.detailManager.originalData[entityName];
+      
+      for (var i = 0; i < dataArray.length; i++) {
+        if (String(dataArray[i][idField]) === String(rowData[idField])) {
+          fullData = dataArray[i];
+          break;
+        }
+      }
 
+      // Se abbiamo trovato i dati, popola il form
       if (fullData) {
         window.detailManager.selectedRows[entityName] = fullData;
-        populateForm(entityName, fullData, fieldMapping);
+        fillForm(entityName, fullData, fieldMapping);
+        
         // Mostra il form di dettaglio
-        const detailDiv = document.getElementById(`${entityName}-detail`);
+        var detailDiv = document.getElementById(entityName + '-detail');
         if (detailDiv) {
           detailDiv.style.display = 'block';
         }
       }
     });
 
-    // Se c'è una selezione, riseleziona la riga dopo il refresh
-    const selected = window.detailManager.selectedRows[entityName];
-    if (selected) {
-      const idField = Object.keys(fieldMapping)[0];
-      const rows = table.querySelectorAll('tbody tr');
-      rows.forEach(row => {
-        const cell = row.querySelector('td');
-        if (cell && String(cell.textContent.trim()) === String(selected[idField])) {
-          row.classList.add('selected-row');
+    // Se c'è una riga già selezionata, riselezionala
+    var selectedData = window.detailManager.selectedRows[entityName];
+    if (selectedData) {
+      var fields = Object.keys(fieldMapping);
+      var idField = fields[0];
+      var rows = table.querySelectorAll('tbody tr');
+      
+      for (var i = 0; i < rows.length; i++) {
+        var cell = rows[i].querySelector('td');
+        if (cell && String(cell.textContent.trim()) === String(selectedData[idField])) {
+          rows[i].classList.add('selected-row');
+          // Forza il background azzurro su tutte le celle
+          var cells = rows[i].querySelectorAll('td');
+          for (var j = 0; j < cells.length; j++) {
+            cells[j].style.backgroundColor = '#2196f3';
+            cells[j].style.color = '#fff';
+          }
         }
-      });
+      }
     }
   }, 500);
 }
 
-/**
- * Popola il form con i dati della riga selezionata
- */
-function populateForm(entityName, data, fieldMapping) {
-  Object.keys(fieldMapping).forEach(field => {
-    const inputId = fieldMapping[field];
-    const input = document.getElementById(inputId);
+// Riempie il form con i dati della riga
+function fillForm(entityName, data, fieldMapping) {
+  var fields = Object.keys(fieldMapping);
+  
+  for (var i = 0; i < fields.length; i++) {
+    var field = fields[i];
+    var inputId = fieldMapping[field];
+    var input = document.getElementById(inputId);
+    
     if (input) {
-      const value = data[field];
+      var value = data[field];
+      
       if (input.type === 'checkbox') {
-        input.checked = value == 1 || value === true;
+        input.checked = (value == 1 || value === true);
       } else {
-        input.value = value !== null && value !== undefined ? value : '';
+        if (value !== null && value !== undefined) {
+          input.value = value;
+        } else {
+          input.value = '';
+        }
       }
     }
-  });
+  }
 }
 
-/**
- * Raccoglie i dati dal form
- */
-function collectFormData(entityName, fieldMapping) {
-  const data = {};
-  Object.keys(fieldMapping).forEach(field => {
-    const inputId = fieldMapping[field];
-    const input = document.getElementById(inputId);
+// Legge i dati dal form
+function getFormData(entityName, fieldMapping) {
+  var data = {};
+  var fields = Object.keys(fieldMapping);
+  
+  for (var i = 0; i < fields.length; i++) {
+    var field = fields[i];
+    var inputId = fieldMapping[field];
+    var input = document.getElementById(inputId);
+    
     if (input) {
       if (input.type === 'checkbox') {
         data[field] = input.checked ? 1 : 0;
       } else if (input.type === 'number') {
-        data[field] = input.value ? parseFloat(input.value) : null;
+        if (input.value) {
+          data[field] = parseFloat(input.value);
+        } else {
+          data[field] = null;
+        }
       } else {
         data[field] = input.value || null;
       }
     }
-  });
+  }
+  
   return data;
 }
 
-/**
- * Pulisce il form
- */
+// Pulisce il form
 function clearForm(entityName, fieldMapping) {
-  Object.keys(fieldMapping).forEach(field => {
-    const inputId = fieldMapping[field];
-    const input = document.getElementById(inputId);
+  var fields = Object.keys(fieldMapping);
+  
+  for (var i = 0; i < fields.length; i++) {
+    var field = fields[i];
+    var inputId = fieldMapping[field];
+    var input = document.getElementById(inputId);
+    
     if (input) {
       if (input.type === 'checkbox') {
         input.checked = false;
-      } else if (input.hasAttribute('readonly')) {
-        input.value = '';
       } else {
         input.value = '';
       }
     }
-  });
+  }
   
-  // Deseleziona riga
+  // Deseleziona la riga
   window.detailManager.selectedRows[entityName] = null;
-  const gridDiv = document.getElementById(`${entityName}-grid`);
+  
+  var gridDiv = document.getElementById(entityName + '-grid');
   if (gridDiv) {
-    gridDiv.querySelectorAll('tr.selected-row').forEach(r => r.classList.remove('selected-row'));
+    var selectedRows = gridDiv.querySelectorAll('tr.selected-row');
+    for (var i = 0; i < selectedRows.length; i++) {
+      selectedRows[i].classList.remove('selected-row');
+    }
   }
 }
 
-/**
- * Configura i pulsanti (Nuovo, Salva, Elimina, Aggiorna, Export)
- */
+// Configura i pulsanti (Nuovo, Salva, Elimina, Aggiorna, Export)
 function setupButtons(entityName, data, grid, fieldMapping) {
-  const idField = Object.keys(fieldMapping)[0];
+  var fields = Object.keys(fieldMapping);
+  var idField = fields[0];
 
   // Pulsante NUOVO
-  const btnNew = document.getElementById(`${entityName}-new`);
+  var btnNew = document.getElementById(entityName + '-new');
   if (btnNew) {
-    btnNew.addEventListener('click', () => {
+    btnNew.addEventListener('click', function() {
       clearForm(entityName, fieldMapping);
       
-      // Mostra il form di dettaglio
-      const detailDiv = document.getElementById(`${entityName}-detail`);
+      // Mostra il form
+      var detailDiv = document.getElementById(entityName + '-detail');
       if (detailDiv) {
         detailDiv.style.display = 'block';
       }
       
       // Genera un nuovo ID
-      const maxId = Math.max(...window.detailManager.originalData[entityName].map(item => item[idField] || 0), 0);
-      const idInput = document.getElementById(fieldMapping[idField]);
+      var maxId = 0;
+      var dataArray = window.detailManager.originalData[entityName];
+      
+      for (var i = 0; i < dataArray.length; i++) {
+        var currentId = dataArray[i][idField] || 0;
+        if (currentId > maxId) {
+          maxId = currentId;
+        }
+      }
+      
+      var newId = maxId + 1;
+      var idInput = document.getElementById(fieldMapping[idField]);
       if (idInput) {
-        idInput.value = maxId + 1;
+        idInput.value = newId;
       }
     });
   }
 
   // Pulsante SALVA
-  const btnSave = document.getElementById(`${entityName}-save`);
+  var btnSave = document.getElementById(entityName + '-save');
   if (btnSave) {
-    btnSave.addEventListener('click', () => {
-      const formData = collectFormData(entityName, fieldMapping);
-      const selectedRow = window.detailManager.selectedRows[entityName];
+    btnSave.addEventListener('click', function() {
+      var formData = getFormData(entityName, fieldMapping);
+      var selectedRow = window.detailManager.selectedRows[entityName];
 
       if (selectedRow) {
         // Modifica esistente
-        const index = window.detailManager.originalData[entityName].findIndex(
-          item => item[idField] === selectedRow[idField]
-        );
+        var dataArray = window.detailManager.originalData[entityName];
+        var index = -1;
+        
+        for (var i = 0; i < dataArray.length; i++) {
+          if (dataArray[i][idField] === selectedRow[idField]) {
+            index = i;
+            break;
+          }
+        }
+        
         if (index !== -1) {
-          window.detailManager.originalData[entityName][index] = { ...formData };
-          alert(`${entityName.charAt(0).toUpperCase() + entityName.slice(1)} aggiornato con successo!`);
+          window.detailManager.originalData[entityName][index] = formData;
+          var entityNameCapitalized = entityName.charAt(0).toUpperCase() + entityName.slice(1);
+          alert(entityNameCapitalized + ' aggiornato con successo!');
         }
       } else {
         // Nuovo inserimento
         window.detailManager.originalData[entityName].push(formData);
-        alert(`Nuovo ${entityName.slice(0, -1)} aggiunto con successo!`);
+        var itemName = entityName.slice(0, -1);
+        alert('Nuovo ' + itemName + ' aggiunto con successo!');
       }
 
       // Aggiorna la griglia
-      refreshGrid(entityName, grid, fieldMapping);
+      updateGrid(entityName, grid, fieldMapping);
       clearForm(entityName, fieldMapping);
     });
   }
 
   // Pulsante ELIMINA
-  const btnDelete = document.getElementById(`${entityName}-delete`);
+  var btnDelete = document.getElementById(entityName + '-delete');
   if (btnDelete) {
-    btnDelete.addEventListener('click', () => {
-      const selectedRow = window.detailManager.selectedRows[entityName];
+    btnDelete.addEventListener('click', function() {
+      var selectedRow = window.detailManager.selectedRows[entityName];
+      
       if (!selectedRow) {
         alert('Seleziona una riga da eliminare');
         return;
       }
 
-      if (confirm(`Sei sicuro di voler eliminare questo ${entityName.slice(0, -1)}?`)) {
-        const index = window.detailManager.originalData[entityName].findIndex(
-          item => item[idField] === selectedRow[idField]
-        );
+      var itemName = entityName.slice(0, -1);
+      var confirmDelete = confirm('Sei sicuro di voler eliminare questo ' + itemName + '?');
+      
+      if (confirmDelete) {
+        var dataArray = window.detailManager.originalData[entityName];
+        var index = -1;
+        
+        for (var i = 0; i < dataArray.length; i++) {
+          if (dataArray[i][idField] === selectedRow[idField]) {
+            index = i;
+            break;
+          }
+        }
+        
         if (index !== -1) {
           window.detailManager.originalData[entityName].splice(index, 1);
-          alert(`${entityName.charAt(0).toUpperCase() + entityName.slice(1)} eliminato con successo!`);
-          refreshGrid(entityName, grid, fieldMapping);
+          var entityNameCapitalized = entityName.charAt(0).toUpperCase() + entityName.slice(1);
+          alert(entityNameCapitalized + ' eliminato con successo!');
+          
+          updateGrid(entityName, grid, fieldMapping);
           clearForm(entityName, fieldMapping);
           
-          // Nascondi il form dopo l'eliminazione
-          const detailDiv = document.getElementById(`${entityName}-detail`);
+          // Nascondi il form
+          var detailDiv = document.getElementById(entityName + '-detail');
           if (detailDiv) {
             detailDiv.style.display = 'none';
           }
@@ -244,109 +333,124 @@ function setupButtons(entityName, data, grid, fieldMapping) {
   }
 
   // Pulsante AGGIORNA
-  const btnRefresh = document.getElementById(`${entityName}-refresh`);
+  var btnRefresh = document.getElementById(entityName + '-refresh');
   if (btnRefresh) {
-    btnRefresh.addEventListener('click', () => {
-      refreshGrid(entityName, grid, fieldMapping);
+    btnRefresh.addEventListener('click', function() {
+      updateGrid(entityName, grid, fieldMapping);
       clearForm(entityName, fieldMapping);
       alert('Dati aggiornati!');
     });
   }
 
   // Pulsante EXPORT
-  const btnExport = document.getElementById(`${entityName}-export`);
+  var btnExport = document.getElementById(entityName + '-export');
   if (btnExport) {
-    btnExport.addEventListener('click', () => {
-      exportToExcel(entityName, window.detailManager.originalData[entityName], fieldMapping);
+    btnExport.addEventListener('click', function() {
+      exportData(entityName, window.detailManager.originalData[entityName], fieldMapping);
     });
   }
 }
 
-/**
- * Aggiorna la griglia
- */
-function refreshGrid(entityName, grid, fieldMapping) {
-  const data = window.detailManager.originalData[entityName];
-  const rowMapper = createRowMapper(fieldMapping);
-  grid.updateConfig({ data: data.map(rowMapper) }).forceRender();
+// Aggiorna la griglia
+function updateGrid(entityName, grid, fieldMapping) {
+  var data = window.detailManager.originalData[entityName];
+  var mappedData = [];
   
-  // Ri-configura il listener dopo il refresh
-  setTimeout(() => setupRowClickListener(entityName, fieldMapping), 300);
+  for (var i = 0; i < data.length; i++) {
+    var row = [];
+    var fields = Object.keys(fieldMapping);
+    
+    for (var j = 0; j < fields.length; j++) {
+      row.push(data[i][fields[j]]);
+    }
+    
+    mappedData.push(row);
+  }
+  
+  grid.updateConfig({ data: mappedData }).forceRender();
+  
+  // Riconfigura il listener dopo il refresh
+  setTimeout(function() {
+    setupRowClick(entityName, fieldMapping);
+  }, 300);
 }
 
-/**
- * Crea una funzione mapper per le righe
- */
-function createRowMapper(fieldMapping) {
-  return function(item) {
-    return Object.keys(fieldMapping).map(field => item[field]);
-  };
-}
-
-/**
- * Esporta i dati in Excel (CSV)
- */
-function exportToExcel(entityName, data, fieldMapping) {
+// Esporta i dati in Excel (CSV)
+function exportData(entityName, data, fieldMapping) {
   if (!data || data.length === 0) {
     alert('Nessun dato da esportare');
     return;
   }
 
-  // Crea intestazioni
-  const headers = Object.keys(fieldMapping).join(',');
+  // Crea le intestazioni
+  var fields = Object.keys(fieldMapping);
+  var headers = fields.join(',');
   
-  // Crea righe
-  const rows = data.map(item => {
-    return Object.keys(fieldMapping).map(field => {
-      const value = item[field];
-      // Gestisci valori con virgole o virgolette
-      if (value === null || value === undefined) return '';
-      const strValue = String(value);
-      if (strValue.includes(',') || strValue.includes('"') || strValue.includes('\n')) {
-        return `"${strValue.replace(/"/g, '""')}"`;
+  // Crea le righe
+  var rows = [];
+  for (var i = 0; i < data.length; i++) {
+    var rowValues = [];
+    
+    for (var j = 0; j < fields.length; j++) {
+      var field = fields[j];
+      var value = data[i][field];
+      
+      if (value === null || value === undefined) {
+        rowValues.push('');
+      } else {
+        var strValue = String(value);
+        
+        // Se contiene virgole o virgolette, racchiudi tra virgolette
+        if (strValue.includes(',') || strValue.includes('"') || strValue.includes('\n')) {
+          strValue = '"' + strValue.replace(/"/g, '""') + '"';
+        }
+        
+        rowValues.push(strValue);
       }
-      return strValue;
-    }).join(',');
-  }).join('\n');
+    }
+    
+    rows.push(rowValues.join(','));
+  }
 
-  const csv = headers + '\n' + rows;
+  var csv = headers + '\n' + rows.join('\n');
   
-  // Download del file
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  const url = URL.createObjectURL(blob);
+  // Crea il file e scaricalo
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var link = document.createElement('a');
+  var url = URL.createObjectURL(blob);
+  
   link.setAttribute('href', url);
-  link.setAttribute('download', `${entityName}_export_${Date.now()}.csv`);
+  link.setAttribute('download', entityName + '_export_' + Date.now() + '.csv');
   link.style.visibility = 'hidden';
+  
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
 
-// Aggiungi stile CSS per la riga selezionata (più forte - sovrascrive tutti gli stili di Grid.js)
-const style = document.createElement('style');
-style.textContent = `
-  .gridjs-tbody tr.selected-row td.gridjs-td,
-  .gridjs-tbody tr.selected-row:nth-child(odd) td.gridjs-td,
-  .gridjs-tbody tr.selected-row:nth-child(even) td.gridjs-td,
-  .gridjs-tbody tr.selected-row td[class*="gridjs-td"],
-  tbody tr.selected-row td {
-    background-color: #2196f3 !important;
-    background: #2196f3 !important;
-    color: #fff !important;
-    border-color: #1976d2 !important;
-  }
-  .gridjs-tbody tr.selected-row,
-  .gridjs-tbody tr.selected-row:nth-child(odd),
-  .gridjs-tbody tr.selected-row:nth-child(even) {
-    background-color: #2196f3 !important;
-    background: #2196f3 !important;
-  }
-  .gridjs-tbody tr.selected-row:hover td.gridjs-td,
-  .gridjs-tbody tr.selected-row:hover td {
-    background-color: #1e88e5 !important;
-    background: #1e88e5 !important;
-    color: #fff !important;
-  }
-`;
+// Aggiungi lo stile CSS per le righe selezionate
+var style = document.createElement('style');
+style.textContent = '\n' +
+  '  .gridjs-tbody tr.selected-row td.gridjs-td,\n' +
+  '  .gridjs-tbody tr.selected-row:nth-child(odd) td.gridjs-td,\n' +
+  '  .gridjs-tbody tr.selected-row:nth-child(even) td.gridjs-td,\n' +
+  '  .gridjs-tbody tr.selected-row td[class*="gridjs-td"],\n' +
+  '  tbody tr.selected-row td {\n' +
+  '    background-color: #2196f3 !important;\n' +
+  '    background: #2196f3 !important;\n' +
+  '    color: #fff !important;\n' +
+  '    border-color: #1976d2 !important;\n' +
+  '  }\n' +
+  '  .gridjs-tbody tr.selected-row,\n' +
+  '  .gridjs-tbody tr.selected-row:nth-child(odd),\n' +
+  '  .gridjs-tbody tr.selected-row:nth-child(even) {\n' +
+  '    background-color: #2196f3 !important;\n' +
+  '    background: #2196f3 !important;\n' +
+  '  }\n' +
+  '  .gridjs-tbody tr.selected-row:hover td.gridjs-td,\n' +
+  '  .gridjs-tbody tr.selected-row:hover td {\n' +
+  '    background-color: #1e88e5 !important;\n' +
+  '    background: #1e88e5 !important;\n' +
+  '    color: #fff !important;\n' +
+  '  }\n';
 document.head.appendChild(style);

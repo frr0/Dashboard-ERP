@@ -15,9 +15,11 @@ input.form-control:focus, .search-bar:focus {
 }
 
 /* Placeholder bianco per la ricerca */
-input.form-control.ricerca::placeholder {
-    color: #fff;
-    opacity: 1;
+input.form-control::placeholder,
+input.form-control.ricerca::placeholder,
+.search-bar::placeholder {
+    color: #ffffff !important;
+    opacity: 0.8;
 }
 
 /* Box modifica (edit) e elimina (delete) scuri */
@@ -165,6 +167,14 @@ main {
 .orders-toolbar .btn { white-space: nowrap; }
 .small-muted { color: var(--app-muted); font-size: .85rem; }
 
+/* Placeholder nei form di dettaglio più chiari */
+.orders-detail input::placeholder,
+.orders-detail textarea::placeholder,
+.orders-detail select::placeholder {
+    color: #9aa1a7 !important;
+    opacity: 1;
+}
+
 /* Tabulator theme tweaks to match dark */
 .tabulator { background: var(--app-surface); color: var(--app-text); border: 1px solid var(--app-border); border-radius: .5rem; }
 .tabulator .tabulator-header { background: var(--app-surface); border-bottom: 1px solid var(--app-border); }
@@ -184,5 +194,26 @@ main {
 .gridjs-tbody .gridjs-tr:hover { filter:brightness(1.08); }
 .gridjs-tbody .gridjs-td { border-color: var(--app-border); color: var(--app-text); }
 .gridjs-footer { background: var(--app-surface); border-top:1px solid var(--app-border); }
-.gridjs-pagination .gridjs-pages button { background:#2f3438; color:var(--app-text); border-color:var(--app-border); }
-.gridjs-pagination .gridjs-pages button:hover { background:#3d4349; }
+.gridjs-pagination .gridjs-pages button {
+  color: #fff !important;
+  background: #353a3f !important;
+  border: 1px solid var(--app-border) !important;
+  font-weight: 500;
+}
+.gridjs-pagination .gridjs-pages button[disabled],
+.gridjs-pagination .gridjs-pages button:disabled {
+  color: #b0b8c1 !important;
+  background: #23272b !important;
+  border-color: #23272b !important;
+  opacity: 1 !important;
+}
+.gridjs-pagination .gridjs-pages button.gridjs-currentPage {
+  background: #6ea8fe !important;
+  color: #23272b !important;
+  border-color: #6ea8fe !important;
+}
+.gridjs-pagination .gridjs-pages button:hover:not([disabled]) {
+  background: #1976d2 !important;
+  color: #fff !important;
+  border-color: #1976d2 !important;
+}
