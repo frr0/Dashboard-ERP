@@ -57,17 +57,28 @@ function setupRowClick(entityName, fieldMapping) {
       var allRows = table.querySelectorAll('tr');
       for (var i = 0; i < allRows.length; i++) {
         allRows[i].classList.remove('selected-row');
+        allRows[i].style.backgroundColor = '';
+        allRows[i].style.background = '';
         // Rimuovi anche gli stili inline dalle celle (sia td normali che gridjs-td)
         var cells = allRows[i].querySelectorAll('td, [class*="gridjs-td"]');
         for (var j = 0; j < cells.length; j++) {
           cells[j].style.backgroundColor = '';
           cells[j].style.background = '';
           cells[j].style.color = '';
+          cells[j].removeAttribute('style');
         }
       }
       
       // Aggiungi la classe alla riga cliccata
       row.classList.add('selected-row');
+      row.style.setProperty('background-color', '#2196f3', 'important');
+      row.style.setProperty('background', '#2196f3', 'important');
+      
+      // Forza il background azzurro su tutte le celle della riga selezionata (sia td normali che gridjs-td)
+      var selectedCells = row.querySelectorAll('td, [class*="gridjs-td"]');
+      for (var k = 0; k < selectedCells.length; k++) {
+        selectedCells[k].setAttribute('style', 'background-color: #2196f3 !important; background: #2196f3 !important; color: #fff !important;');
+      }
 
       // Leggi i dati dalla riga
       var cells = row.querySelectorAll('td');
@@ -121,6 +132,13 @@ function setupRowClick(entityName, fieldMapping) {
         var cell = rows[i].querySelector('td');
         if (cell && String(cell.textContent.trim()) === String(selectedData[idField])) {
           rows[i].classList.add('selected-row');
+          rows[i].style.setProperty('background-color', '#2196f3', 'important');
+          rows[i].style.setProperty('background', '#2196f3', 'important');
+          // Forza il background azzurro su tutte le celle (sia td normali che gridjs-td)
+          var cells = rows[i].querySelectorAll('td, [class*="gridjs-td"]');
+          for (var j = 0; j < cells.length; j++) {
+            cells[j].setAttribute('style', 'background-color: #2196f3 !important; background: #2196f3 !important; color: #fff !important;');
+          }
         }
       }
     }

@@ -188,11 +188,11 @@ main {
 .gridjs-thead .gridjs-th { background: var(--app-surface); color: var(--app-text); border-color: #181a1b; }
 
 /* Bordi scuri per celle Grid.js */
-.gridjs-tbody .gridjs-td { border-color: #181a1b !important; }
+.gridjs-tbody .gridjs-td { border-color: #0c0e09 !important; }
 
 /* Tutte le righe Grid.js stesso colore scuro */
 .gridjs-tbody .gridjs-tr:not(.selected-row) .gridjs-td {
-  background-color: #23272b;
+  background-color: #1d2231;
   color: var(--app-text);
 }
 

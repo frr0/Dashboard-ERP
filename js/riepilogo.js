@@ -37,6 +37,9 @@ function getItems(payload) {
   return [];
 }
 
+// data 
+/////////////////////////////////////////////////////////////////////////////////////
+
 // Converte la data Oracle in formato ISO
 function convertDate(dateString) {
   if (!dateString) {
@@ -79,7 +82,9 @@ function formatNumber(value) {
   return num.toFixed(2);
 }
 
-// Funzione principale per renderizzare il riepilogo
+/////////////////////////////////////////////////////////////////////////////////////
+
+// Funzione principale 
 async function renderRiepilogo() {
   // Carica i dati
   var ordersData = await loadData('json/orders.json');
@@ -134,7 +139,7 @@ async function renderRiepilogo() {
   
   var last10Orders = ordersList.slice(0, 10);
   
-  // Riempi tabella ultimi ordini
+  // tabella ultimi ordini
   var tbody1 = document.querySelector('#tbl-last-orders tbody');
   if (tbody1) {
     var html = '';
