@@ -1,30 +1,34 @@
-// Vanilla JS: carica frammenti HTML con fetch e opzionalmente esegue una callback
-// Usa anche initSearchIn per collegare la ricerca dopo ogni load
-console.log('loadHtml.js caricato');
-window.loadHtml = async function(url, targetSelector, callback) {
-  console.log(`loadHtml chiamato: ${url} -> ${targetSelector}`);
-  try {
-    const bust = (url.includes('?') ? '&' : '?') + '_=' + Date.now();
-    const response = await fetch(url + bust, { cache: 'no-store' });
-    console.log(`Fetch response per ${url}:`, response.status, response.ok);
-    const html = await response.text();
-    const target = typeof targetSelector === 'string' ? document.querySelector(targetSelector) : targetSelector;
-    console.log(`Target ${targetSelector}:`, target);
-    if (!target) {
-      console.warn('loadHtml: target non trovato', targetSelector);
-      return;
-    }
-    target.innerHTML = html;
-    // Dispatch custom event so Grid.js initializer or other listeners can act
-    document.dispatchEvent(new CustomEvent('page:loaded', { detail: { url, target } }));
-
-    console.log(`HTML inserito, callback:`, callback);
-    if (typeof callback === 'function') {
-      console.log(`Eseguo callback...`);
-      callback(target);
-    }
-    if (typeof window.initSearchIn === 'function') window.initSearchIn(target);
-  } catch (err) {
-    console.error('Errore caricamento HTML:', err);
-  }
+window.loadHtml = function(url, targetSelector, callback) {
+  // un parametro per evitare la cache
+  var bust = (url.indexOf('?') !== -1 ? '&' : '?') + '_=' + Date.now();
+  fetch(url + bust, { cache: 'no-store' })
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      return response.text();
+    })
+    .then(function(html) {
+      // Trovo il target dove inserire l'HTML
+      var target;
+      if (typeof targetSelector === 'string') {
+        target = document.querySelector(targetSelector);
+      } else {
+        target = targetSelector;
+      }
+      if (!target) return;
+      // Inserisce l'HTML
+      target.innerHTML = html;
+      // Evento custom per altri script
+      document.dispatchEvent(new CustomEvent('page:loaded', { detail: { url: url, target: target } }));
+      // Richiama le funzioni di setup se esistono
+      if (typeof window.setupNavigation === 'function') window.setupNavigation();
+      if (typeof window.initSearch === 'function') window.initSearch();
+      if (typeof window.initModalAndTableActions === 'function') window.initModalAndTableActions();
+      // Se c'è una callback, la esegue
+      if (typeof callback === 'function') callback(target);
+    })
+    .catch(function(err) {
+      console.error('Failed to load HTML from ' + url, err);
+    });
 };

@@ -1,4 +1,4 @@
-// Questa funzione controlla se Grid.js è già caricato, altrimenti lo carica dalla CDN
+// Questa funzione controlla se Grid.js è già caricato
 function ensureGridJs(callback) {
   if (typeof gridjs !== 'undefined') {
     callback();
@@ -25,7 +25,7 @@ function ensureGridJs(callback) {
   document.head.appendChild(script);
 }
 
-// Questa funzione prende i dati da una url e li restituisce come array
+// Questa funzione prende i dati da un url e li restituisce come array
 async function fetchData(url) {
   try {
     var response = await fetch(url + (url.indexOf('?') !== -1 ? '&' : '?') + '_=' + Date.now(), { cache: 'no-store' });
@@ -44,24 +44,38 @@ async function fetchData(url) {
 }
 
 // Funzione per aggiungere la ricerca su una tabella
-function makeSearcher(inputId, originalData, grid, rowMapper) {
+function makeSearcher(inputId, entityName, grid, rowMapper, fieldMapping) {
   var input = document.getElementById(inputId);
   if (!input) return;
   input.addEventListener('input', function () {
     var searchTerm = this.value.toLowerCase().trim();
+    // Usa i dati aggiornati da detailManager
+    var currentData = window.detailManager && window.detailManager.originalData && window.detailManager.originalData[entityName]
+      ? window.detailManager.originalData[entityName]
+      : [];
+    console.log('Ricerca in', entityName, '- Dati correnti:', currentData.length, 'elementi');
     var filteredData;
     if (!searchTerm) {
-      filteredData = originalData;
+      filteredData = currentData;
     } else {
-      filteredData = originalData.filter(function (obj) {
+      filteredData = currentData.filter(function (obj) {
         return Object.values(obj).some(function (v) {
           return v != null && String(v).toLowerCase().indexOf(searchTerm) !== -1;
         });
       });
     }
     grid.updateConfig({ data: filteredData.map(rowMapper) }).forceRender();
+    // Riattiva i listener dopo il render
+    if (typeof setupRowClick === 'function' && fieldMapping) {
+      setTimeout(function() {
+        setupRowClick(entityName, fieldMapping);
+      }, 300);
+    }
   });
 }
+
+// tabelle
+////////////////////////////////////////////////////////////////////////////////////////
 
 // Inizializza la tabella clienti
 async function initClienti() {
@@ -108,7 +122,6 @@ async function initClienti() {
   });
   clientiGrid.render(clientiDiv);
   clientiDiv.dataset.gridjsInit = '1';
-  makeSearcher('clienti-search', clientiData, clientiGrid, clientiRowMapper);
   
   // Inizializza il detail manager
   if (typeof initDetailManager === 'function') {
@@ -127,10 +140,12 @@ async function initClienti() {
       fax: 'cli-fax'
     };
     initDetailManager('clienti', clientiData, clientiGrid, fieldMapping);
+    makeSearcher('clienti-search', 'clienti', clientiGrid, clientiRowMapper, fieldMapping);
   }
 }
 
 // Inizializza la tabella prodotti
+// ----------------------------------------------------------------------
 async function initProdotti() {
   var prodottiDiv = document.getElementById('prodotti-grid');
   if (!prodottiDiv || prodottiDiv.dataset.gridjsInit) return;
@@ -171,7 +186,6 @@ async function initProdotti() {
   });
   prodottiGrid.render(prodottiDiv);
   prodottiDiv.dataset.gridjsInit = '1';
-  makeSearcher('prodotti-search', prodottiData, prodottiGrid, prodottiRowMapper);
   
   // Inizializza il detail manager
   if (typeof initDetailManager === 'function') {
@@ -188,10 +202,12 @@ async function initProdotti() {
       discontinued: 'prod-discontinued'
     };
     initDetailManager('prodotti', prodottiData, prodottiGrid, fieldMapping);
+    makeSearcher('prodotti-search', 'prodotti', prodottiGrid, prodottiRowMapper, fieldMapping);
   }
 }
 
 // Inizializza la tabella categorie
+// ----------------------------------------------------------------------
 async function initCategorie() {
   var categorieDiv = document.getElementById('categorie-grid');
   if (!categorieDiv || categorieDiv.dataset.gridjsInit) return;
@@ -214,7 +230,6 @@ async function initCategorie() {
   });
   categorieGrid.render(categorieDiv);
   categorieDiv.dataset.gridjsInit = '1';
-  makeSearcher('categorie-search', categorieData, categorieGrid, categorieRowMapper);
   
   // Inizializza il detail manager
   if (typeof initDetailManager === 'function') {
@@ -224,10 +239,12 @@ async function initCategorie() {
       description: 'cat-description'
     };
     initDetailManager('categorie', categorieData, categorieGrid, fieldMapping);
+    makeSearcher('categorie-search', 'categorie', categorieGrid, categorieRowMapper, fieldMapping);
   }
 }
 
 // Inizializza la tabella dipendenti
+// ----------------------------------------------------------------------
 async function initDipendenti() {
   var dipendentiDiv = document.getElementById('dipendenti-grid');
   if (!dipendentiDiv || dipendentiDiv.dataset.gridjsInit) return;
@@ -274,7 +291,6 @@ async function initDipendenti() {
   });
   dipendentiGrid.render(dipendentiDiv);
   dipendentiDiv.dataset.gridjsInit = '1';
-  makeSearcher('dipendenti-search', dipendentiData, dipendentiGrid, dipendentiRowMapper);
   
   // Inizializza il detail manager
   if (typeof initDetailManager === 'function') {
@@ -297,10 +313,12 @@ async function initDipendenti() {
       notes: 'dip-notes'
     };
     initDetailManager('dipendenti', dipendentiData, dipendentiGrid, fieldMapping);
+    makeSearcher('dipendenti-search', 'dipendenti', dipendentiGrid, dipendentiRowMapper, fieldMapping);
   }
 }
 
 // Inizializza la tabella spedizionieri
+// ----------------------------------------------------------------------
 async function initSpedizionieri() {
   var spedizionieriDiv = document.getElementById('spedizionieri-grid');
   if (!spedizionieriDiv || spedizionieriDiv.dataset.gridjsInit) return;
@@ -323,7 +341,6 @@ async function initSpedizionieri() {
   });
   spedizionieriGrid.render(spedizionieriDiv);
   spedizionieriDiv.dataset.gridjsInit = '1';
-  makeSearcher('spedizionieri-search', spedizionieriData, spedizionieriGrid, spedizionieriRowMapper);
   
   // Inizializza il detail manager
   if (typeof initDetailManager === 'function') {
@@ -333,10 +350,12 @@ async function initSpedizionieri() {
       phone: 'sped-phone'
     };
     initDetailManager('spedizionieri', spedizionieriData, spedizionieriGrid, fieldMapping);
+    makeSearcher('spedizionieri-search', 'spedizionieri', spedizionieriGrid, spedizionieriRowMapper, fieldMapping);
   }
 }
 
 // Inizializza la tabella fornitori
+// ----------------------------------------------------------------------
 async function initFornitori() {
   var fornitoriDiv = document.getElementById('fornitori-grid');
   if (!fornitoriDiv || fornitoriDiv.dataset.gridjsInit) return;
@@ -377,9 +396,9 @@ async function initFornitori() {
   });
   fornitoriGrid.render(fornitoriDiv);
   fornitoriDiv.dataset.gridjsInit = '1';
-  makeSearcher('fornitori-search', fornitoriData, fornitoriGrid, fornitoriRowMapper);
   
   // Inizializza il detail manager
+// ----------------------------------------------------------------------
   if (typeof initDetailManager === 'function') {
     var fieldMapping = {
       supplier_id: 'forn-id',
@@ -396,6 +415,7 @@ async function initFornitori() {
       homepage: 'forn-homepage'
     };
     initDetailManager('fornitori', fornitoriData, fornitoriGrid, fieldMapping);
+    makeSearcher('fornitori-search', 'fornitori', fornitoriGrid, fornitoriRowMapper, fieldMapping);
   }
 }
 
@@ -448,7 +468,6 @@ async function initOrdini() {
   });
   ordiniGrid.render(ordiniDiv);
   ordiniDiv.dataset.gridjsInit = '1';
-  makeSearcher('order-search', ordiniData, ordiniGrid, ordiniRowMapper);
   
   // Inizializza il detail manager per ordini
   if (typeof initDetailManager === 'function') {
@@ -468,6 +487,7 @@ async function initOrdini() {
       freight: 'of-freight'
     };
     initDetailManager('orders', ordiniData, ordiniGrid, fieldMapping);
+    makeSearcher('order-search', 'orders', ordiniGrid, ordiniRowMapper, fieldMapping);
   }
 }
 

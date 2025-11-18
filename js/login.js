@@ -1,4 +1,3 @@
-// login.js compatto
 document.addEventListener('DOMContentLoaded',()=>{
   const f=document.querySelector('form');if(!f)return;
   f.addEventListener('submit',e=>{

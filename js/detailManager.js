@@ -1,32 +1,41 @@
-// detailManager.js - Gestisce i dettagli delle tabelle
-
-// Variabili globali per tenere traccia dei dati
+// Variabili globali 
 window.detailManager = {
   selectedRows: {},
   originalData: {},
   grids: {}
 };
 
-// Inizializza la gestione dei dettagli per una tabella
+// Inizializzazione della gestione dei dettagli per una tabella
 function initDetailManager(entityName, data, grid, fieldMapping) {
   // Salva i dati originali
   window.detailManager.originalData[entityName] = data;
   window.detailManager.grids[entityName] = grid;
   window.detailManager.selectedRows[entityName] = null;
 
-  // Nascondi il form di dettaglio all'inizio
+  // Reset listener flags per permettere re-inizializzazione
+  var buttons = ['new', 'save', 'delete', 'refresh', 'export'];
+  for (var i = 0; i < buttons.length; i++) {
+    var btn = document.getElementById(entityName + '-' + buttons[i]);
+    if (btn && btn.dataset.listenerBound) {
+      delete btn.dataset.listenerBound;
+    }
+  }
+
+  // Form detail nascosto all'inizio
   var detailDiv = document.getElementById(entityName + '-detail');
   if (detailDiv) {
     detailDiv.style.display = 'none';
   }
 
-  // Configura il click sulle righe
+  // click sulle righe
   setupRowClick(entityName, fieldMapping);
 
-  // Configura i pulsanti
+  // Configurazione dei pulsanti
   setupButtons(entityName, data, grid, fieldMapping);
 }
 
+// ROW CLICK HANDLER
+  // ----------------------------------------------------------------------------------
 // Configura il listener per il click sulle righe
 function setupRowClick(entityName, fieldMapping) {
   var gridDiv = document.getElementById(entityName + '-grid');
@@ -34,17 +43,17 @@ function setupRowClick(entityName, fieldMapping) {
     return;
   }
 
-  // Aspetta che la tabella sia renderizzata
+  // aspetto che la tabella sia renderizzata
   setTimeout(function() {
     var table = gridDiv.querySelector('table');
     if (!table) {
       return;
     }
 
-    // Rimuovi eventuali vecchi listener
+    // cancellazione eventuali vecchi listener
     table.onclick = null;
 
-    // Aggiungi il listener per il click
+    // Aggiunta listener per il click
     table.addEventListener('click', function(event) {
       var row = event.target.closest('tr');
       
@@ -53,38 +62,18 @@ function setupRowClick(entityName, fieldMapping) {
         return;
       }
 
-      // Rimuovi la selezione da tutte le righe
+      // Rimozione della selezione da tutte le righe
       var allRows = table.querySelectorAll('tr');
       for (var i = 0; i < allRows.length; i++) {
         allRows[i].classList.remove('selected-row');
-        allRows[i].style.backgroundColor = '';
-        allRows[i].style.background = '';
-        // Rimuovi anche gli stili inline dalle celle (sia td normali che gridjs-td)
-        var cells = allRows[i].querySelectorAll('td, [class*="gridjs-td"]');
-        for (var j = 0; j < cells.length; j++) {
-          cells[j].style.backgroundColor = '';
-          cells[j].style.background = '';
-          cells[j].style.color = '';
-          cells[j].removeAttribute('style');
-        }
-      }
-      
-      // Aggiungi la classe alla riga cliccata
-      row.classList.add('selected-row');
-      row.style.setProperty('background-color', '#2196f3', 'important');
-      row.style.setProperty('background', '#2196f3', 'important');
-      
-      // Forza il background azzurro su tutte le celle della riga selezionata (sia td normali che gridjs-td)
-      var selectedCells = row.querySelectorAll('td, [class*="gridjs-td"]');
-      for (var k = 0; k < selectedCells.length; k++) {
-        selectedCells[k].setAttribute('style', 'background-color: #2196f3 !important; background: #2196f3 !important; color: #fff !important;');
       }
 
-      // Leggi i dati dalla riga
+      // Aggiungo la classe alla riga cliccata
+      row.classList.add('selected-row');
+      // Leggo i dati dalla riga
       var cells = row.querySelectorAll('td');
       var rowData = {};
-      
-      // Il primo campo è sempre l'ID
+      // Il primo campo è l'ID
       var fields = Object.keys(fieldMapping);
       var idField = fields[0];
       
@@ -92,7 +81,7 @@ function setupRowClick(entityName, fieldMapping) {
         rowData[idField] = cells[0].textContent.trim();
       }
 
-      // Trova i dati completi nell'array originale
+      // dati completi nell'array originale
       var fullData = null;
       var dataArray = window.detailManager.originalData[entityName];
       
@@ -103,8 +92,9 @@ function setupRowClick(entityName, fieldMapping) {
         }
       }
 
-      // Se abbiamo trovato i dati, popola il form
+      // Se ci sono i dati, popola il form
       if (fullData) {
+        //CHIAMO IL FILLFORM
         window.detailManager.selectedRows[entityName] = fullData;
         fillForm(entityName, fullData, fieldMapping);
         
@@ -120,30 +110,11 @@ function setupRowClick(entityName, fieldMapping) {
         }
       }
     });
-
-    // Se c'è una riga già selezionata, riselezionala
-    var selectedData = window.detailManager.selectedRows[entityName];
-    if (selectedData) {
-      var fields = Object.keys(fieldMapping);
-      var idField = fields[0];
-      var rows = table.querySelectorAll('tbody tr');
-      
-      for (var i = 0; i < rows.length; i++) {
-        var cell = rows[i].querySelector('td');
-        if (cell && String(cell.textContent.trim()) === String(selectedData[idField])) {
-          rows[i].classList.add('selected-row');
-          rows[i].style.setProperty('background-color', '#2196f3', 'important');
-          rows[i].style.setProperty('background', '#2196f3', 'important');
-          // Forza il background azzurro su tutte le celle (sia td normali che gridjs-td)
-          var cells = rows[i].querySelectorAll('td, [class*="gridjs-td"]');
-          for (var j = 0; j < cells.length; j++) {
-            cells[j].setAttribute('style', 'background-color: #2196f3 !important; background: #2196f3 !important; color: #fff !important;');
-          }
-        }
-      }
-    }
   }, 500);
 }
+
+// FILLFORM
+  // ----------------------------------------------------------------------------------
 
 // Riempie il form con i dati della riga
 function fillForm(entityName, data, fieldMapping) {
@@ -153,10 +124,30 @@ function fillForm(entityName, data, fieldMapping) {
     var field = fields[i];
     var inputId = fieldMapping[field];
     var input = document.getElementById(inputId);
-    
     if (input) {
       var value = data[field];
-      
+      // Conversione formato data per input type="date"
+      if (input.type === 'date' && typeof value === 'string' && value.match(/\d{2}-[A-Z]{3}-\d{2}/)) {
+        // Esempio: 09-DEC-96 => 1996-12-09
+        var months = {
+          'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04', 'MAY': '05', 'JUN': '06',
+          'JUL': '07', 'AUG': '08', 'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'
+        };
+        var parts = value.split('-');
+        if (parts.length === 3) {
+          var day = parts[0];
+          var month = months[parts[1].toUpperCase()] || '01';
+          var year = parts[2];
+          // Gestione anni 2 cifre: 00-49 => 2000-2049, 50-99 => 1950-1999
+          var yearNum = parseInt(year, 10);
+          if (yearNum < 50) {
+            year = '20' + (yearNum < 10 ? '0' : '') + yearNum;
+          } else {
+            year = '19' + year;
+          }
+          value = year + '-' + month + '-' + day;
+        }
+      }
       if (input.type === 'checkbox') {
         input.checked = (value == 1 || value === true);
       } else {
@@ -228,14 +219,17 @@ function clearForm(entityName, fieldMapping) {
   }
 }
 
-// Configura i pulsanti (Nuovo, Salva, Elimina, Aggiorna, Export)
+// Configurazione dei pulsanti (Nuovo, Salva, Elimina, Aggiorna, Export)
+///////////////////////////////////////////////////////////////////////////////////////////////
 function setupButtons(entityName, data, grid, fieldMapping) {
   var fields = Object.keys(fieldMapping);
   var idField = fields[0];
 
   // Pulsante NUOVO
+  // --------------------------------------------------------------------------------
   var btnNew = document.getElementById(entityName + '-new');
-  if (btnNew) {
+  if (btnNew && !btnNew.dataset.listenerBound) {
+    btnNew.dataset.listenerBound = '1';
     btnNew.addEventListener('click', function() {
       clearForm(entityName, fieldMapping);
       
@@ -265,8 +259,10 @@ function setupButtons(entityName, data, grid, fieldMapping) {
   }
 
   // Pulsante SALVA
+  // --------------------------------------------------------------------------------
   var btnSave = document.getElementById(entityName + '-save');
-  if (btnSave) {
+  if (btnSave && !btnSave.dataset.listenerBound) {
+    btnSave.dataset.listenerBound = '1';
     btnSave.addEventListener('click', function() {
       var formData = getFormData(entityName, fieldMapping);
       var selectedRow = window.detailManager.selectedRows[entityName];
@@ -285,14 +281,10 @@ function setupButtons(entityName, data, grid, fieldMapping) {
         
         if (index !== -1) {
           window.detailManager.originalData[entityName][index] = formData;
-          var entityNameCapitalized = entityName.charAt(0).toUpperCase() + entityName.slice(1);
-          alert(entityNameCapitalized + ' aggiornato con successo!');
         }
       } else {
         // Nuovo inserimento
         window.detailManager.originalData[entityName].push(formData);
-        var itemName = entityName.slice(0, -1);
-        alert('Nuovo ' + itemName + ' aggiunto con successo!');
       }
 
       // Aggiorna la griglia
@@ -302,13 +294,14 @@ function setupButtons(entityName, data, grid, fieldMapping) {
   }
 
   // Pulsante ELIMINA
+  // --------------------------------------------------------------------------------
   var btnDelete = document.getElementById(entityName + '-delete');
-  if (btnDelete) {
+  if (btnDelete && !btnDelete.dataset.listenerBound) {
+    btnDelete.dataset.listenerBound = '1';
     btnDelete.addEventListener('click', function() {
       var selectedRow = window.detailManager.selectedRows[entityName];
       
       if (!selectedRow) {
-        alert('Seleziona una riga da eliminare');
         return;
       }
 
@@ -328,35 +321,36 @@ function setupButtons(entityName, data, grid, fieldMapping) {
         
         if (index !== -1) {
           window.detailManager.originalData[entityName].splice(index, 1);
-          var entityNameCapitalized = entityName.charAt(0).toUpperCase() + entityName.slice(1);
-          alert(entityNameCapitalized + ' eliminato con successo!');
-          
-          updateGrid(entityName, grid, fieldMapping);
-          clearForm(entityName, fieldMapping);
           
           // Nascondi il form
           var detailDiv = document.getElementById(entityName + '-detail');
           if (detailDiv) {
             detailDiv.style.display = 'none';
           }
+          
+          clearForm(entityName, fieldMapping);
+          updateGrid(entityName, grid, fieldMapping);
         }
       }
     });
   }
 
   // Pulsante AGGIORNA
+  // --------------------------------------------------------------------------------
   var btnRefresh = document.getElementById(entityName + '-refresh');
-  if (btnRefresh) {
+  if (btnRefresh && !btnRefresh.dataset.listenerBound) {
+    btnRefresh.dataset.listenerBound = '1';
     btnRefresh.addEventListener('click', function() {
       updateGrid(entityName, grid, fieldMapping);
       clearForm(entityName, fieldMapping);
-      alert('Dati aggiornati!');
     });
   }
 
   // Pulsante EXPORT
+  // --------------------------------------------------------------------------------
   var btnExport = document.getElementById(entityName + '-export');
-  if (btnExport) {
+  if (btnExport && !btnExport.dataset.listenerBound) {
+    btnExport.dataset.listenerBound = '1';
     btnExport.addEventListener('click', function() {
       exportData(entityName, window.detailManager.originalData[entityName], fieldMapping);
     });
@@ -388,6 +382,7 @@ function updateGrid(entityName, grid, fieldMapping) {
 }
 
 // Esporta i dati in Excel (CSV)
+  // --------------------------------------------------------------------------------
 function exportData(entityName, data, fieldMapping) {
   if (!data || data.length === 0) {
     alert('Nessun dato da esportare');

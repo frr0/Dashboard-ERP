@@ -1,52 +1,73 @@
-// navigation.js - Gestione navigazione tra le varie sezioni
 console.log('navigation.js caricato');
 
-window.setupNavigation = function() {
-  const routes = {
-    '#link-clienti': ['clienti.html'],
-    '#link-riepilogo': ['riepilogo.html'],
-    '#link-ordini': ['ordini.html'],
-    '#link-prodotti': ['Prodotti.html'],
-    '#link-dipendenti': ['dipendenti.html'],
-    '#link-spedizionieri': ['sped.html'],
-    '#link-categorie': ['categorie.html'],
-    '#Gestione-prodotti': ['Prodotti.html'],
-    '#Gestione-categorie': ['categorie.html']
-  };
+function setupNavigation() {
+  // Mappa dei link e dei file html corrispondenti
+  var routes = [
+    { selector: '#link-clienti', file: 'clienti.html' },
+    { selector: '#link-riepilogo', file: 'riepilogo.html' },
+    { selector: '#link-ordini', file: 'ordini.html' },
+    { selector: '#link-prodotti', file: 'Prodotti.html' },
+    { selector: '#link-dipendenti', file: 'dipendenti.html' },
+    { selector: '#link-spedizionieri', file: 'sped.html' },
+    { selector: '#link-categorie', file: 'categorie.html' },
+    { selector: '#Gestione-prodotti', file: 'Prodotti.html' },
+    { selector: '#Gestione-categorie', file: 'categorie.html' }
+  ];
 
-  Object.keys(routes).forEach(selector => {
-    const el = document.querySelector(selector);
-    console.log('Binding link:', selector, !!el);
-    if (!el) return;
-    const [file] = routes[selector];
-    el.addEventListener('click', evt => {
-      evt.preventDefault();
+  // aggiungo il evento click
+  for (var i = 0; i < routes.length; i++) {
+    var route = routes[i];
+    var el = document.querySelector(route.selector);
+    console.log('Binding link:', route.selector, !!el);
+    if (!el) continue;
+    (function(el, route) {
+      el.addEventListener('click', function(evt) {
+        evt.preventDefault();
 
-      // Gestione classe "active"
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
+        // Rimuove la classe active da tutti i link
+        var navLinks = document.querySelectorAll('.nav-link');
+        for (var j = 0; j < navLinks.length; j++) {
+          navLinks[j].classList.remove('active');
+        }
+        // Aggiunge la classe active al link cliccato
+        el.classList.add('active');
+
+        // Controllo ruolo per Dipendenti
+        var role = localStorage.getItem('erp-role') || 'admin';
+        if (route.selector === '#link-dipendenti' && role === 'user') {
+          alert('Accesso non autorizzato alla sezione Dipendenti.');
+          return;
+        }
+
+        // Carica la pagina corrispondente
+        console.log('Click su', route.selector, '-> html/' + route.file);
+        window.loadHtml('html/' + route.file, '#area-principale');
+
+        // Chiude eventuale offcanvas
+        var closeBtn = document.querySelector('.btn-close');
+        if (closeBtn) closeBtn.click();
       });
-      el.classList.add('active');
+    })(el, route);
+  }
 
-      // Role guard: prevent users from accessing Dipendenti
-      const role = localStorage.getItem('erp-role') || 'admin';
-      if (selector === '#link-dipendenti' && role === 'user') {
-        alert('Accesso non autorizzato alla sezione Dipendenti.');
-        return;
-      }
-      console.log('Click su', selector, '-> html/' + file);
-      window.loadHtml(`html/${file}`, '#area-principale');
-      const closeBtn = document.querySelector('.btn-close');
-      if (closeBtn) closeBtn.click();
-    });
-  });
-
-  const submenuLink = document.querySelector('a[href="#submenu-prodotti"]');
+  // Gestione apertura/chiusura submenu prodotti
+  var submenuLink = document.querySelector('a[href="#submenu-prodotti"]');
   if (submenuLink) {
-    submenuLink.addEventListener('click', e => {
+    submenuLink.addEventListener('click', function(e) {
       e.preventDefault();
-      const submenu = document.querySelector('#submenu-prodotti');
-      if (submenu) submenu.classList.toggle('show');
+      var submenu = document.querySelector('#submenu-prodotti');
+      if (submenu) {
+        if (submenu.classList.contains('show')) {
+          submenu.classList.remove('show');
+        } else {
+          submenu.classList.add('show');
+        }
+      }
     });
   }
-};
+}
+
+// Inizializza la navigazione quando la pagina è pronta
+document.addEventListener('DOMContentLoaded', function() {
+  setupNavigation();
+});

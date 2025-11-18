@@ -1,3 +1,9 @@
+/* Fix selezione riga Grid.js: forza colore su tutte le celle selezionate */
+.gridjs-tbody .gridjs-tr.selected-row,
+.gridjs-tbody .gridjs-tr.selected-row .gridjs-td {
+    background-color: #2196f3 !important;
+    color: #fff !important;
+}
 .card .card-body .text-muted {
     color: #fff !important;
 }
