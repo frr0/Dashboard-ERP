@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       localStorage.setItem('erp-logged', '1');
       localStorage.setItem('erp-role', role);
       localStorage.setItem('erp-email', email);
-      window.location.href = 'dashboard.html';
+      window.location.href = 'index.html';
     } else {
       alert('Credenziali non valide!');
     }
