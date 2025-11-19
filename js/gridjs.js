@@ -252,12 +252,12 @@ async function initDipendenti() {
   var dipendentiData = await fetchData('json/employees.json');
   var dipendentiColumns = [
     { id: 'employee_id', name: 'ID', width: 70 },
-    { id: 'last_name', name: 'Cognome' },
-    { id: 'first_name', name: 'Nome' },
+    { id: 'lastname', name: 'Cognome' },
+    { id: 'firstname', name: 'Nome' },
     { id: 'title', name: 'Titolo' },
     { id: 'title_of_courtesy', name: 'Titolo cortesia' },
-    { id: 'birth_date', name: 'Nascita' },
-    { id: 'hire_date', name: 'Assunzione' },
+    { id: 'birthdate', name: 'Nascita' },
+    { id: 'hiredate', name: 'Assunzione' },
     { id: 'address', name: 'Indirizzo' },
     { id: 'city', name: 'Città' },
     { id: 'region', name: 'Regione' },
@@ -268,12 +268,12 @@ async function initDipendenti() {
   function dipendentiRowMapper(e) {
     return [
       e.employee_id,
-      e.last_name,
-      e.first_name,
+      e.lastname,
+      e.firstname,
       e.title,
       e.title_of_courtesy,
-      e.birth_date,
-      e.hire_date,
+      e.birthdate,
+      e.hiredate,
       e.address,
       e.city,
       e.region,
