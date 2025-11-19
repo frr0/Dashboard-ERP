@@ -1,9 +1,3 @@
-/* Fix selezione riga Grid.js: forza colore su tutte le celle selezionate */
-.gridjs-tbody .gridjs-tr.selected-row,
-.gridjs-tbody .gridjs-tr.selected-row .gridjs-td {
-    background-color: #2196f3 !important;
-    color: #fff !important;
-}
 .card .card-body .text-muted {
     color: #fff !important;
 }
@@ -202,25 +196,6 @@ main {
 /* Bordi scuri per celle Grid.js */
 .gridjs-tbody .gridjs-td { border-color: #0c0e09 !important; }
 
-/* Tutte le righe Grid.js stesso colore verde  */
-.gridjs-tbody .gridjs-tr:not(.selected-row) .gridjs-td,
-.gridjs-tbody .gridjs-tr:nth-child(odd):not(.selected-row) .gridjs-td,
-.gridjs-tbody .gridjs-tr:nth-child(even):not(.selected-row) .gridjs-td {
-  background-color: #292936 !important;
-  color: var(--app-text);
-}
-
-/* Hover: NON applicare se la riga è selezionata */
-.gridjs-tbody .gridjs-tr:not(.selected-row):hover .gridjs-td {
-  filter: brightness(1.2);
-}
-
-/* Stile per righe selezionate - azzurro */
-.gridjs-tbody .gridjs-tr.selected-row .gridjs-td {
-  background-color: #2196f3 !important;
-  color: #fff !important;
-}
-
 .gridjs-footer { background: var(--app-surface); border-top: 1px solid var(--app-border); }
 .gridjs-pagination .gridjs-pages button {
   color: #fff !important;
@@ -252,6 +227,37 @@ main {
   border-color: #beb6b6;
 }
 
-.gridjs-tr:nth-child(even) {
-  background-color: inherit;
+/*
+  Stili aggiornati per tabella scura con righe alternate (zebra) e selezione
+*/
+
+/* 1. Stile base per le righe e le CELLE */
+.gridjs-tbody .gridjs-tr {
+  cursor: pointer;
+}
+
+.gridjs-tbody .gridjs-td {
+  color: #ffffff !important;
+  border-color: #0c0e09 !important; /* Mantiene il bordo scuro */
+}
+
+/* 2. Stile zebra striping per le righe */
+.gridjs-tbody .gridjs-tr:nth-child(odd) .gridjs-td {
+  background-color: #3a3f44 !important;
+}
+
+.gridjs-tbody .gridjs-tr:nth-child(even) .gridjs-td {
+  background-color: #2e3236 !important;
+}
+
+/* 3. Stile per la riga selezionata - Specificità aumentata */
+html body .gridjs-tbody .gridjs-tr.riga-selezionata .gridjs-td {
+  background-color: #4a5a6a !important;
+  color: #ffffff !important;
+  border-color: #6ea8fe !important; /* Aggiungo un bordo colorato per evidenziare meglio */
+}
+
+/* 4. Stile hover per tutte le righe non selezionate */
+.gridjs-tbody .gridjs-tr:not(.riga-selezionata):hover .gridjs-td {
+  background-color: #3a3f44 !important; /* Leggermente più chiaro al passaggio del mouse */
 }

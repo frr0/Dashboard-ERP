@@ -2,24 +2,18 @@
 window.detailManager = {
   selectedRows: {},
   originalData: {},
-  grids: {}
+  grids: {},
+  filteredData: {},
+  rowMappers: {}
 };
 
 // Inizializzazione della gestione dei dettagli per una tabella
-function initDetailManager(entityName, data, grid, fieldMapping) {
+function initDetailManager(entityName, data, grid, fieldMapping, rowMapper) {
   // Salva i dati originali
   window.detailManager.originalData[entityName] = data;
   window.detailManager.grids[entityName] = grid;
   window.detailManager.selectedRows[entityName] = null;
-
-  // Reset listener flags per permettere re-inizializzazione
-  var buttons = ['new', 'save', 'delete', 'refresh', 'export'];
-  for (var i = 0; i < buttons.length; i++) {
-    var btn = document.getElementById(entityName + '-' + buttons[i]);
-    if (btn && btn.dataset.listenerBound) {
-      delete btn.dataset.listenerBound;
-    }
-  }
+  window.detailManager.rowMappers[entityName] = rowMapper;
 
   // Form detail nascosto all'inizio
   var detailDiv = document.getElementById(entityName + '-detail');
@@ -34,83 +28,89 @@ function initDetailManager(entityName, data, grid, fieldMapping) {
   setupButtons(entityName, data, grid, fieldMapping);
 }
 
-// ROW CLICK HANDLER
-  // ----------------------------------------------------------------------------------
-// Configura il listener per il click sulle righe
+// ROW CLICK HANDLER - Implementazione con Event Delegation sul Container
+// ----------------------------------------------------------------------------------
 function setupRowClick(entityName, fieldMapping) {
   var gridDiv = document.getElementById(entityName + '-grid');
-  if (!gridDiv) {
-    return;
-  }
+  if (!gridDiv) return;
 
-  // aspetto che la tabella sia renderizzata
-  setTimeout(function() {
-    var table = gridDiv.querySelector('table');
-    if (!table) {
-      return;
+  // Evita di attaccare più listener allo stesso div
+  if (gridDiv.dataset.rowClickListenerAttached) return;
+  gridDiv.dataset.rowClickListenerAttached = 'true';
+
+  gridDiv.addEventListener('click', function(event) {
+    // Intercetta il click su una riga (standard table)
+    var clickedRow = event.target.closest('tr');
+    if (!clickedRow) return;
+
+    console.log('Click su riga:', clickedRow); // Debug
+
+    // Ignora click sull'header
+    if (clickedRow.closest('thead')) return;
+    if (!clickedRow.closest('tbody')) return;
+
+    // --- Logica di selezione ---
+    
+    // Trova la riga precedentemente selezionata NEL CONTAINER CORRENTE
+    var previouslySelectedRow = gridDiv.querySelector('tr.riga-selezionata');
+    var isAlreadySelected = clickedRow.classList.contains('riga-selezionata');
+    
+    // Se c'era una riga selezionata e non è quella appena cliccata, deselezionala.
+    if (previouslySelectedRow && previouslySelectedRow !== clickedRow) {
+      previouslySelectedRow.classList.remove('riga-selezionata');
+      previouslySelectedRow.setAttribute('aria-selected', 'false');
     }
 
-    // cancellazione eventuali vecchi listener
-    table.onclick = null;
+    // Attiva/disattiva la selezione sulla riga corrente
+    if (isAlreadySelected) {
+        // Se era già selezionata, la deselezioniamo (toggle behavior)
+        clickedRow.classList.remove('riga-selezionata');
+        clickedRow.setAttribute('aria-selected', 'false');
+    } else {
+        // Altrimenti la selezioniamo
+        clickedRow.classList.add('riga-selezionata');
+        clickedRow.setAttribute('aria-selected', 'true');
+    }
+    
+    var isNowSelected = clickedRow.classList.contains('riga-selezionata');
 
-    // Aggiunta listener per il click
-    table.addEventListener('click', function(event) {
-      var row = event.target.closest('tr');
-      
-      // Se non è una riga o è l'header, ignora
-      if (!row || row.parentElement.tagName === 'THEAD') {
-        return;
-      }
+    // Gestisci il form dei dettagli
+    var detailDiv = document.getElementById(entityName + '-detail');
 
-      // Rimozione della selezione da tutte le righe
-      var allRows = table.querySelectorAll('tr');
-      for (var i = 0; i < allRows.length; i++) {
-        allRows[i].classList.remove('selected-row');
-      }
+    if (isNowSelected) {
+      // La riga è stata selezionata: popola e mostra il form
+      var cells = clickedRow.querySelectorAll('td');
+      var idField = Object.keys(fieldMapping)[0];
+      // Assumiamo che la prima colonna sia l'ID
+      var idValue = cells[0] ? cells[0].textContent.trim() : null;
 
-      // Aggiungo la classe alla riga cliccata
-      row.classList.add('selected-row');
-      // Leggo i dati dalla riga
-      var cells = row.querySelectorAll('td');
-      var rowData = {};
-      // Il primo campo è l'ID
-      var fields = Object.keys(fieldMapping);
-      var idField = fields[0];
-      
-      if (cells[0]) {
-        rowData[idField] = cells[0].textContent.trim();
-      }
-
-      // dati completi nell'array originale
       var fullData = null;
-      var dataArray = window.detailManager.originalData[entityName];
-      
-      for (var i = 0; i < dataArray.length; i++) {
-        if (String(dataArray[i][idField]) === String(rowData[idField])) {
-          fullData = dataArray[i];
-          break;
-        }
+      if (idValue) {
+        var dataArray = window.detailManager.originalData[entityName] || [];
+        fullData = dataArray.find(function(item) {
+          return String(item[idField]) === String(idValue);
+        });
       }
 
-      // Se ci sono i dati, popola il form
       if (fullData) {
-        //CHIAMO IL FILLFORM
         window.detailManager.selectedRows[entityName] = fullData;
         fillForm(entityName, fullData, fieldMapping);
-        
-        // Mostra il form di dettaglio
-        var detailDiv = document.getElementById(entityName + '-detail');
-        if (detailDiv) {
-          detailDiv.style.display = 'block';
-        }
-        
-        // Se è un ordine, carica i dettagli dei prodotti acquistati
+        if (detailDiv) detailDiv.style.display = 'block';
+
+        // Logica specifica per ordini
         if (entityName === 'orders' && fullData.order_id) {
-          loadOrderDetails(fullData.order_id);
+          if (typeof loadOrderDetails === 'function') {
+            loadOrderDetails(fullData.order_id);
+          }
         }
       }
-    });
-  }, 500);
+    } else {
+      // La riga è stata deselezionata: pulisci e nascondi il form
+      window.detailManager.selectedRows[entityName] = null;
+      clearForm(entityName, fieldMapping);
+      if (detailDiv) detailDiv.style.display = 'none';
+    }
+  });
 }
 
 // FILLFORM
@@ -289,6 +289,7 @@ function setupButtons(entityName, data, grid, fieldMapping) {
 
       // Aggiorna la griglia
       updateGrid(entityName, grid, fieldMapping);
+      forceSearchbarRefresh(entityName);
       clearForm(entityName, fieldMapping);
     });
   }
@@ -330,6 +331,7 @@ function setupButtons(entityName, data, grid, fieldMapping) {
           
           clearForm(entityName, fieldMapping);
           updateGrid(entityName, grid, fieldMapping);
+          forceSearchbarRefresh(entityName);
         }
       }
     });
@@ -342,6 +344,7 @@ function setupButtons(entityName, data, grid, fieldMapping) {
     btnRefresh.dataset.listenerBound = '1';
     btnRefresh.addEventListener('click', function() {
       updateGrid(entityName, grid, fieldMapping);
+      forceSearchbarRefresh(entityName);
       clearForm(entityName, fieldMapping);
     });
   }
@@ -352,26 +355,62 @@ function setupButtons(entityName, data, grid, fieldMapping) {
   if (btnExport && !btnExport.dataset.listenerBound) {
     btnExport.dataset.listenerBound = '1';
     btnExport.addEventListener('click', function() {
-      exportData(entityName, window.detailManager.originalData[entityName], fieldMapping);
+      var dataToExport = (window.detailManager.filteredData && window.detailManager.filteredData[entityName])
+        ? window.detailManager.filteredData[entityName]
+        : window.detailManager.originalData[entityName];
+      exportData(entityName, dataToExport, fieldMapping);
     });
+  }
+}
+
+// Helper per ottenere l'input search corretto per ogni entity
+function getSearchInput(entityName) {
+  const map = {
+    orders: 'order-search',
+    clienti: 'clienti-search',
+    prodotti: 'prodotti-search',
+    categorie: 'categorie-search',
+    dipendenti: 'dipendenti-search',
+    fornitori: 'fornitori-search',
+    spedizionieri: 'spedizionieri-search'
+  };
+  return document.getElementById(map[entityName] || (entityName + '-search'));
+}
+
+// Helper per forzare il refresh tramite searchbar
+function forceSearchbarRefresh(entityName) {
+  var searchInput = getSearchInput(entityName);
+  if (searchInput) {
+    searchInput.value = ' ';
+    searchInput.dispatchEvent(new Event('input'));
   }
 }
 
 // Aggiorna la griglia
 function updateGrid(entityName, grid, fieldMapping) {
-  var data = window.detailManager.originalData[entityName];
-  var mappedData = [];
-  
-  for (var i = 0; i < data.length; i++) {
-    var row = [];
-    var fields = Object.keys(fieldMapping);
-    
-    for (var j = 0; j < fields.length; j++) {
-      row.push(data[i][fields[j]]);
-    }
-    
-    mappedData.push(row);
+  // Usa la grid salvata se quella passata è null/undefined
+  var searchInput = document.getElementById(entityName + '-search');
+  if (searchInput) searchInput.value = ' ';
+  searchInput && searchInput.dispatchEvent(new Event('input'));
+  if (!grid && window.detailManager.grids && window.detailManager.grids[entityName]) {
+    grid = window.detailManager.grids[entityName];
   }
+  
+  if (!grid) {
+    console.error('Grid non disponibile per', entityName);
+    return;
+  }
+  
+  var data = window.detailManager.originalData[entityName];
+  var rowMapper = window.detailManager.rowMappers[entityName];
+  
+  if (!rowMapper) {
+    console.error('rowMapper non disponibile per', entityName);
+    return;
+  }
+  
+  // Usa lo stesso metodo che funziona nella ricerca: mappa i dati con rowMapper
+  var mappedData = data.map(rowMapper);
   
   grid.updateConfig({ data: mappedData }).forceRender();
   
