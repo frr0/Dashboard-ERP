@@ -50,21 +50,7 @@ function setupNavigation() {
     })(el, route);
   }
 
-  // Gestione apertura/chiusura submenu prodotti
-  var submenuLink = document.querySelector('a[href="#submenu-prodotti"]');
-  if (submenuLink) {
-    submenuLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      var submenu = document.querySelector('#submenu-prodotti');
-      if (submenu) {
-        if (submenu.classList.contains('show')) {
-          submenu.classList.remove('show');
-        } else {
-          submenu.classList.add('show');
-        }
-      }
-    });
-  }
+  // Il submenu prodotti ora è gestito da Bootstrap collapse (data-bs-toggle="collapse")
 }
 
 // Inizializza la navigazione quando la pagina è pronta
