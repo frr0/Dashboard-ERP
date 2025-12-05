@@ -14,7 +14,7 @@ function setupNavigation() {
     { selector: '#Gestione-categorie', file: 'categorie.html' }
   ];
 
-  // aggiungo il evento click
+  // aggiungo il click
   for (var i = 0; i < routes.length; i++) {
     var route = routes[i];
     var el = document.querySelector(route.selector);
@@ -50,7 +50,6 @@ function setupNavigation() {
     })(el, route);
   }
 
-  // Il submenu prodotti ora è gestito da Bootstrap collapse (data-bs-toggle="collapse")
 }
 
 // Inizializza la navigazione quando la pagina è pronta

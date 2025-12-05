@@ -28,7 +28,7 @@ function initDetailManager(entityName, data, grid, fieldMapping, rowMapper) {
   setupButtons(entityName, data, grid, fieldMapping);
 }
 
-// ROW CLICK HANDLER - Implementazione con Event Delegation sul Container
+// ROW CLICK HANDLER 
 // ----------------------------------------------------------------------------------
 function setupRowClick(entityName, fieldMapping) {
   var gridDiv = document.getElementById(entityName + '-grid');
